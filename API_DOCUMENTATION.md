@@ -1,5 +1,6 @@
 # 🚀 XeonStorage REST API Documentation (v2.0)
 
+> **Base URL:** `https://xeonstorage.onrender.com`  
 > **Language Selection / Pilihan Bahasa:**  
 > 🇺🇸 [English Documentation](#-english-documentation) | 🇮🇩 [Dokumentasi Bahasa Indonesia](#-dokumentasi-bahasa-indonesia)
 
@@ -9,7 +10,7 @@
 
 ## 📌 How to Obtain an API Key (Sign In Required)
 > [!IMPORTANT]
-> **Authentication Required:** To obtain an API Key, you **must register an account and sign in** to the XeonStorage platform, then navigate to your **User Console / Dashboard** (`/dashboard`).
+> **Authentication Required:** To obtain an API Key, you **must register an account and sign in** to the XeonStorage platform, then navigate to your **User Console / Dashboard** ([/dashboard](https://xeonstorage.onrender.com/dashboard)).
 > Under the *Manage API Keys* section, you can generate and revoke multiple API Keys at any time for Telegram bots, scripts, or backend web integrations.
 
 ---
@@ -51,7 +52,7 @@ Uploads a binary media file (Image, MP4/MOV Video, Audio, Document) to cloud sto
 
 #### cURL Example:
 ```bash
-curl -X POST http://127.0.0.1:8000/api/v1/files \
+curl -X POST https://xeonstorage.onrender.com/api/v1/files \
   -H "Authorization: Bearer XST_your_api_key" \
   -F "file=@sample_video.mp4"
 ```
@@ -70,7 +71,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/files \
     "storage_provider": "telegram",
     "storage_key": "29:BQACAgUAAyEGAAMBCX_QuwAD...",
     "created_at": "2026-08-26T07:40:35.266898+00:00",
-    "url": "http://127.0.0.1:8000/f/BUacSvpA4g.mp4"
+    "url": "https://xeonstorage.onrender.com/f/BUacSvpA4g.mp4"
   }
 }
 ```
@@ -82,7 +83,7 @@ Retrieve detailed technical metadata for any uploaded file.
 
 #### cURL Example:
 ```bash
-curl -X GET http://127.0.0.1:8000/api/v1/files/BUacSvpA4g \
+curl -X GET https://xeonstorage.onrender.com/api/v1/files/BUacSvpA4g \
   -H "Authorization: Bearer XST_your_api_key"
 ```
 
@@ -93,7 +94,7 @@ Retrieve all files belonging to the authenticated API Key account.
 
 #### cURL Example:
 ```bash
-curl -X GET http://127.0.0.1:8000/api/v1/me/files \
+curl -X GET https://xeonstorage.onrender.com/api/v1/me/files \
   -H "Authorization: Bearer XST_your_api_key"
 ```
 
@@ -104,7 +105,7 @@ Deletes the file from the database, disk cache, and Telegram cloud storage.
 
 #### cURL Example:
 ```bash
-curl -X DELETE http://127.0.0.1:8000/api/v1/files/BUacSvpA4g \
+curl -X DELETE https://xeonstorage.onrender.com/api/v1/files/BUacSvpA4g \
   -H "Authorization: Bearer XST_your_api_key"
 ```
 
@@ -113,11 +114,11 @@ curl -X DELETE http://127.0.0.1:8000/api/v1/files/BUacSvpA4g \
 ### E. Public URLs (No Login Required)
 - **Direct Media URL (Hotlink / Video Stream with HTTP 206 Support):**
   ```http
-  GET http://127.0.0.1:8000/f/{file_id}.{ext}
+  GET https://xeonstorage.onrender.com/f/{file_id}.{ext}
   ```
 - **Web Gallery Viewer Page:**
   ```http
-  GET http://127.0.0.1:8000/v/{file_id}
+  GET https://xeonstorage.onrender.com/v/{file_id}
   ```
 
 ---
@@ -129,7 +130,7 @@ curl -X DELETE http://127.0.0.1:8000/api/v1/files/BUacSvpA4g \
 import requests
 
 API_KEY = "XST_your_api_key_here"
-BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = "https://xeonstorage.onrender.com"
 headers = {"Authorization": f"Bearer {API_KEY}"}
 
 # 1. Upload Video or Image
@@ -151,7 +152,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 
 const API_KEY = 'XST_your_api_key_here';
-const BASE_URL = 'http://127.0.0.1:8000';
+const BASE_URL = 'https://xeonstorage.onrender.com';
 
 async function upload() {
   const form = new FormData();
@@ -191,7 +192,7 @@ upload();
 
 ## 📌 Cara Mendapatkan API Key (Wajib Login)
 > [!IMPORTANT]
-> **Autentikasi Wajib:** Untuk mendapatkan token API Key, Anda **wajib mendaftarkan akun dan masuk (login)** ke platform XeonStorage, kemudian buka halaman **Konsol Pengguna / Dashboard** (`/dashboard`).
+> **Autentikasi Wajib:** Untuk mendapatkan token API Key, Anda **wajib mendaftarkan akun dan masuk (login)** ke platform XeonStorage, kemudian buka halaman **Konsol Pengguna / Dashboard** ([/dashboard](https://xeonstorage.onrender.com/dashboard)).
 > Di bagian *Kelola API Key*, Anda dapat membuat token API Key baru kapan saja untuk keperluan integrasi bot, script, maupun backend.
 
 ---
@@ -233,7 +234,7 @@ Mengunggah berkas ke cloud Telegram dengan akselerasi cache lokal server.
 
 #### Contoh cURL:
 ```bash
-curl -X POST http://127.0.0.1:8000/api/v1/files \
+curl -X POST https://xeonstorage.onrender.com/api/v1/files \
   -H "Authorization: Bearer XST_your_api_key" \
   -F "file=@sample_video.mp4"
 ```
@@ -252,7 +253,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/files \
     "storage_provider": "telegram",
     "storage_key": "29:BQACAgUAAyEGAAMBCX_QuwAD...",
     "created_at": "2026-08-26T07:40:35.266898+00:00",
-    "url": "http://127.0.0.1:8000/f/BUacSvpA4g.mp4"
+    "url": "https://xeonstorage.onrender.com/f/BUacSvpA4g.mp4"
   }
 }
 ```
@@ -264,7 +265,7 @@ Mengambil informasi lengkap berkas yang tersimpan.
 
 #### Contoh cURL:
 ```bash
-curl -X GET http://127.0.0.1:8000/api/v1/files/BUacSvpA4g \
+curl -X GET https://xeonstorage.onrender.com/api/v1/files/BUacSvpA4g \
   -H "Authorization: Bearer XST_your_api_key"
 ```
 
@@ -275,7 +276,7 @@ Mengambil seluruh daftar riwayat berkas yang diunggah oleh akun pemilik API Key.
 
 #### Contoh cURL:
 ```bash
-curl -X GET http://127.0.0.1:8000/api/v1/me/files \
+curl -X GET https://xeonstorage.onrender.com/api/v1/me/files \
   -H "Authorization: Bearer XST_your_api_key"
 ```
 
@@ -286,7 +287,7 @@ Menghapus berkas dari database, cache lokal, dan cloud Telegram.
 
 #### Contoh cURL:
 ```bash
-curl -X DELETE http://127.0.0.1:8000/api/v1/files/BUacSvpA4g \
+curl -X DELETE https://xeonstorage.onrender.com/api/v1/files/BUacSvpA4g \
   -H "Authorization: Bearer XST_your_api_key"
 ```
 
@@ -295,11 +296,11 @@ curl -X DELETE http://127.0.0.1:8000/api/v1/files/BUacSvpA4g \
 ### E. Tautan Publik (Tanpa Login)
 - **Direct Hotlink & Streaming Video (Dukungan HTTP 206 Range Seeking):**
   ```http
-  GET http://127.0.0.1:8000/f/{file_id}.{ext}
+  GET https://xeonstorage.onrender.com/f/{file_id}.{ext}
   ```
 - **Web Gallery Viewer Page:**
   ```http
-  GET http://127.0.0.1:8000/v/{file_id}
+  GET https://xeonstorage.onrender.com/v/{file_id}
   ```
 
 ---
