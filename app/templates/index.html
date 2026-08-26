@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}{{ t('brand_name') }} • {{ t('hero_title_1') }}{% endblock %}
+
+{% block content %}
+<main class="max-w-5xl mx-auto px-4 sm:px-5 py-10 md:py-16">
+    <!-- Hero Header with AOS -->
+    <div class="text-center mb-10" data-aos="fade-down" data-aos-duration="600">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-surface-border bg-surface-panel text-xs font-mono text-zinc-400 mb-5 shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+            {{ t('badge_fast') }}
+        </div>
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold font-heading tracking-tight text-white">
+            {{ t('hero_title_1') }} <br class="hidden sm:inline">
+            <span class="text-brand-500">{{ t('hero_title_2') }}</span>
+        </h1>
+        <p class="mt-4 text-zinc-400 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
+            {{ t('hero_subtitle') }}
+        </p>
+    </div>
+
+    <!-- Catbox-style Drag & Drop Upload Zone with AOS -->
+    <div class="max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100" data-aos-duration="700">
+        <div id="dropzone" class="surface-card border-2 border-dashed border-surface-border hover:border-brand-600 rounded-xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-200 relative group bg-surface-panel/70 hover:shadow-xl hover:shadow-brand-950/20">
+            <input type="file" id="fileInput" class="hidden">
+
+            <!-- Idle State -->
+            <div id="dropzoneIdle" class="space-y-4">
+                <div class="w-14 h-14 mx-auto rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-400 group-hover:text-brand-500 group-hover:border-brand-600/50 transition duration-200 group-hover:scale-105">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-base font-semibold text-white font-heading">
+                        {{ t('drop_title') }}
+                    </p>
+                    <p class="text-xs text-zinc-400 mt-1">
+                        {{ t('drop_sub') }}
+                    </p>
+                    <p class="text-[11px] text-zinc-600 font-mono mt-2">
+                        {{ t('max_size_hint') }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Uploading State -->
+            <div id="dropzoneLoading" class="hidden space-y-3 py-3 max-w-md mx-auto">
+                <div class="flex items-center justify-center gap-2">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-surface-border border-t-brand-500 animate-spin flex-shrink-0"></div>
+                    <p id="uploadingFileName" class="text-xs font-mono text-zinc-200 truncate max-w-xs">{{ t('uploading') }}</p>
+                </div>
+                <!-- Progress Bar -->
+                <div class="w-full bg-surface-base rounded-full h-3 p-0.5 overflow-hidden border border-surface-border relative">
+                    <div id="uploadProgressBar" class="bg-gradient-to-r from-brand-600 to-red-500 h-full rounded-full transition-all duration-150" style="width: 0%"></div>
+                </div>
+                <!-- Stats Row: Percentage, Size, Speed -->
+                <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400 px-1">
+                    <span id="uploadProgressText" class="text-brand-500 font-bold">0%</span>
+                    <span id="uploadProgressSize" class="text-zinc-400">0 B / 0 B</span>
+                    <span id="uploadProgressSpeed" class="text-emerald-400 font-medium">0 KB/s</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Box with 2 Output Links: Direct Hosting Link & Gallery Viewer Link -->
+        <div id="resultContainer" class="mt-5 hidden" data-aos="zoom-in" data-aos-duration="500">
+            <div class="surface-card bg-surface-panel border border-surface-border p-5 space-y-4 shadow-xl">
+                <div class="flex items-center justify-between pb-2 border-b border-surface-border">
+                    <span class="text-xs font-mono font-medium text-emerald-400 flex items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        {{ t('upload_success') }}
+                    </span>
+                    <span id="fileSizeBadge" class="text-[11px] font-mono text-zinc-400 bg-surface-subtle px-2.5 py-0.5 rounded border border-surface-border"></span>
+                </div>
+
+                <!-- 1. Direct Media Link (For raw hosting / embed) -->
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between text-[11px] font-mono">
+                        <span class="text-zinc-400 font-medium">{{ t('direct_link_label') }}</span>
+                        <span class="text-brand-500 font-bold">HOTLINK</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="directUrl" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-600 select-all">
+                        <button id="copyDirectBtn" onclick="copyDirectUrl()" class="btn-primary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"></path>
+                            </svg>
+                            <span id="copyDirectBtnText">{{ t('btn_copy') }}</span>
+                        </button>
+                        <a id="openDirectBtn" href="#" target="_blank" class="btn-secondary px-3 py-2 rounded-lg text-xs font-mono flex items-center gap-1">
+                            <span>{{ t('open_file') }}</span>
+                            <svg class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 2. Gallery Viewer Link (For web page preview) -->
+                <div class="space-y-1.5 pt-2">
+                    <div class="flex items-center justify-between text-[11px] font-mono">
+                        <span class="text-zinc-400 font-medium">{{ t('gallery_link_label') }}</span>
+                        <span class="text-emerald-400 font-bold">GALLERY</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="galleryUrl" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-emerald-600 select-all">
+                        <button id="copyGalleryBtn" onclick="copyGalleryUrl()" class="btn-secondary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap">
+                            <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"></path>
+                            </svg>
+                            <span id="copyGalleryBtnText">{{ t('btn_copy') }}</span>
+                        </button>
+                        <a id="openGalleryBtn" href="#" target="_blank" class="btn-secondary px-3 py-2 rounded-lg text-xs font-mono flex items-center gap-1">
+                            <span>{{ t('btn_gallery') }}</span>
+                            <svg class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Pillars with Staggered AOS Animations -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-16 max-w-4xl mx-auto">
+        <div class="surface-card p-5 hover:-translate-y-1 transition duration-200" data-aos="fade-up" data-aos-delay="200">
+            <div class="w-9 h-9 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-300 mb-3">
+                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path>
+                </svg>
+            </div>
+            <div class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">{{ t('feat_1_badge') }}</div>
+            <h3 class="font-heading font-semibold text-base text-white mt-1">{{ t('feat_1_title') }}</h3>
+            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">{{ t('feat_1_desc') }}</p>
+        </div>
+
+        <div class="surface-card p-5 hover:-translate-y-1 transition duration-200" data-aos="fade-up" data-aos-delay="300">
+            <div class="w-9 h-9 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-300 mb-3">
+                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
+                </svg>
+            </div>
+            <div class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">{{ t('feat_2_badge') }}</div>
+            <h3 class="font-heading font-semibold text-base text-white mt-1">{{ t('feat_2_title') }}</h3>
+            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">{{ t('feat_2_desc') }}</p>
+        </div>
+
+        <div class="surface-card p-5 hover:-translate-y-1 transition duration-200" data-aos="fade-up" data-aos-delay="400">
+            <div class="w-9 h-9 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-300 mb-3">
+                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"></path>
+                </svg>
+            </div>
+            <div class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">{{ t('feat_3_badge') }}</div>
+            <h3 class="font-heading font-semibold text-base text-white mt-1">{{ t('feat_3_title') }}</h3>
+            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">{{ t('feat_3_desc') }}</p>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    window.isUserLoggedIn = {{ 'true' if user_id else 'false' }};
+</script>
+<script src="/static/js/uploader.js"></script>
+{% endblock %}

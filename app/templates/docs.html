@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+{% block title %}{{ t('docs_title') }} • {{ t('brand_name') }}{% endblock %}
+
+{% block content %}
+<main class="max-w-5xl mx-auto px-4 sm:px-5 py-10 md:py-12">
+    <!-- Header with AOS -->
+    <div class="mb-10 pb-6 border-b border-surface-border" data-aos="fade-down" data-aos-duration="600">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-zinc-500 uppercase tracking-wider mb-2">
+            <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span> {{ t('docs_tag') }}
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold font-heading text-white">
+            {{ t('docs_title') }}
+        </h1>
+        <p class="text-xs sm:text-sm text-zinc-400 mt-2">
+            {{ t('docs_subtitle') }}
+        </p>
+    </div>
+
+    <!-- Mandatory Login & API Key Notice Box -->
+    <div class="mb-8 p-4 rounded-xl border border-brand-600/40 bg-surface-panel text-zinc-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg" data-aos="zoom-in">
+        <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-brand-950/80 border border-brand-800 flex items-center justify-center text-brand-500 flex-shrink-0 mt-0.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"></path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-xs font-bold text-white font-mono uppercase tracking-wide">{{ t('docs_notice_title') }}</h3>
+                <p class="text-xs text-zinc-400 mt-0.5">
+                    {{ t('docs_notice_desc') }}
+                </p>
+            </div>
+        </div>
+        <div class="flex-shrink-0">
+            {% if user_id %}
+            <a href="/dashboard" class="btn-primary px-3.5 py-2 rounded-lg text-xs font-medium whitespace-nowrap">
+                {{ t('docs_btn_dashboard') }}
+            </a>
+            {% else %}
+            <button type="button" onclick="openAuthModal('login')" class="btn-primary px-3.5 py-2 rounded-lg text-xs font-medium whitespace-nowrap">
+                {{ t('docs_btn_auth') }}
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-[220px_1fr] gap-8">
+        <!-- Sidebar Navigation with AOS -->
+        <aside class="text-xs font-mono space-y-2 text-zinc-500 sticky top-24 self-start" data-aos="fade-right" data-aos-delay="100">
+            <div class="text-zinc-300 font-bold uppercase tracking-wider mb-3">{{ t('toc_title') }}</div>
+            <a href="#auth" class="block hover:text-brand-500 transition py-1">{{ t('toc_auth') }}</a>
+            <a href="#upload" class="block hover:text-brand-500 transition py-1">{{ t('toc_upload') }}</a>
+            <a href="#metadata" class="block hover:text-brand-500 transition py-1">{{ t('toc_metadata') }}</a>
+            <a href="#list" class="block hover:text-brand-500 transition py-1">{{ t('toc_list') }}</a>
+            <a href="#delete" class="block hover:text-brand-500 transition py-1">{{ t('toc_delete') }}</a>
+            <a href="#public-url" class="block hover:text-brand-500 transition py-1">{{ t('toc_public') }}</a>
+            <a href="#examples" class="block hover:text-brand-500 transition py-1">{{ t('toc_examples') }}</a>
+            <a href="#errors" class="block hover:text-brand-500 transition py-1">{{ t('toc_errors') }}</a>
+        </aside>
+
+        <!-- Main Articles with Staggered AOS -->
+        <article class="space-y-8">
+            <!-- 1. Authentication Section -->
+            <section id="auth" class="surface-card p-6" data-aos="fade-up" data-aos-delay="100">
+                <h2 class="text-lg font-heading font-semibold text-white">
+                    {{ t('auth_title') }}
+                </h2>
+                <p class="text-xs text-zinc-400 mt-2">
+                    {{ t('auth_desc') }}
+                </p>
+                <div class="mt-3">
+                    <div class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider mb-1">Header Example:</div>
+                    <pre class="bg-surface-base border border-surface-border rounded-lg p-3.5 text-xs font-mono text-brand-400 overflow-x-auto">Authorization: Bearer XST_your_api_key_here</pre>
+                </div>
+            </section>
+
+            <!-- 2. Upload Endpoint Section -->
+            <section id="upload" class="surface-card p-6" data-aos="fade-up" data-aos-delay="150">
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-0.5 bg-brand-900/40 border border-brand-800 text-brand-500 text-xs font-mono font-bold rounded">POST</span>
+                    <h2 class="text-sm font-mono font-bold text-white">/api/v1/files</h2>
+                </div>
+                <p class="text-xs text-zinc-400 mt-3">
+                    {{ t('upload_desc') }}
+                </p>
+
+                <div class="mt-4 space-y-3 font-mono text-xs">
+                    <div>
+                        <div class="text-[11px] text-zinc-500 uppercase tracking-wider mb-1">Request Headers & Body:</div>
+                        <div class="p-3 bg-surface-base border border-surface-border rounded-lg text-zinc-300 space-y-1">
+                            <div><strong>Content-Type:</strong> multipart/form-data</div>
+                            <div><strong>Form Field:</strong> <code>file</code> (Binary File - Images, MP4, MOV, Audio, Docs)</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-[11px] text-zinc-500 uppercase tracking-wider mb-1">{{ t('curl_example') }}</div>
+                        <pre class="bg-surface-base border border-surface-border rounded-lg p-3.5 text-xs text-zinc-300 overflow-x-auto">curl -X POST {{ request.base_url }}api/v1/files \
+  -H "Authorization: Bearer XST_your_api_key" \
+  -F "file=@sample_video.mp4"</pre>
+                    </div>
+
+                    <div>
+                        <div class="text-[11px] text-zinc-500 uppercase tracking-wider mb-1">Response (200 OK):</div>
+                        <pre class="bg-surface-base border border-surface-border rounded-lg p-3.5 text-xs text-emerald-400 overflow-x-auto">{
+  "success": true,
+  "data": {
+    "id": "BUacSvpA4g",
+    "user_id": "e70c00d9-d040-4c8e-9d29-90fbd18d5a47",
+    "original_name": "sample_video.mp4",
+    "extension": "mp4",
+    "mime_type": "video/mp4",
+    "size": 3224955,
+    "storage_provider": "telegram",
+    "storage_key": "29:BQACAgUAAyEGAAMBCX_QuwAD...",
+    "created_at": "2026-08-26T07:40:35.266898+00:00",
+    "url": "{{ request.base_url }}f/BUacSvpA4g.mp4"
+  }
+}</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. File Metadata Endpoint -->
+            <section id="metadata" class="surface-card p-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-0.5 bg-emerald-950/60 border border-emerald-800 text-emerald-400 text-xs font-mono font-bold rounded">GET</span>
+                    <h2 class="text-sm font-mono font-bold text-white">/api/v1/files/{file_id}</h2>
+                </div>
+                <p class="text-xs text-zinc-400 mt-3">
+                    {{ t('metadata_desc') }}
+                </p>
+                <div class="mt-4 font-mono text-xs">
+                    <pre class="bg-surface-base border border-surface-border rounded-lg p-3.5 text-xs text-zinc-300 overflow-x-auto">curl -X GET {{ request.base_url }}api/v1/files/BUacSvpA4g \
+  -H "Authorization: Bearer XST_your_api_key"</pre>
+                </div>
+            </section>
+
+            <!-- 4. User Files List Endpoint -->
+            <section id="list" class="surface-card p-6" data-aos="fade-up" data-aos-delay="250">
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-0.5 bg-emerald-950/60 border border-emerald-800 text-emerald-400 text-xs font-mono font-bold rounded">GET</span>
+                    <h2 class="text-sm font-mono font-bold text-white">/api/v1/me/files</h2>
+                </div>
+                <p class="text-xs text-zinc-400 mt-3">
+                    {{ t('list_desc') }}
+                </p>
+                <div class="mt-4 font-mono text-xs">
+                    <pre class="bg-surface-base border border-surface-border rounded-lg p-3.5 text-xs text-zinc-300 overflow-x-auto">curl -X GET {{ request.base_url }}api/v1/me/files \
+  -H "Authorization: Bearer XST_your_api_key"</pre>
+                </div>
+            </section>
+
+            <!-- 5. Delete File Endpoint -->
+            <section id="delete" class="surface-card p-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-0.5 bg-red-950/60 border border-red-800 text-red-400 text-xs font-mono font-bold rounded">DELETE</span>
+                    <h2 class="text-sm font-mono font-bold text-white">/api/v1/files/{file_id}</h2>
+                </div>
+                <p class="text-xs text-zinc-400 mt-3">
+                    {{ t('delete_desc') }}
+                </p>
+                <div class="mt-4 font-mono text-xs">
+                    <pre class="bg-surface-base border border-surface-border rounded-lg p-3.5 text-xs text-zinc-300 overflow-x-auto">curl -X DELETE {{ request.base_url }}api/v1/files/BUacSvpA4g \
+  -H "Authorization: Bearer XST_your_api_key"</pre>
+                </div>
+            </section>
+
+            <!-- 6. Public URLs & Streaming -->
+            <section id="public-url" class="surface-card p-6" data-aos="fade-up" data-aos-delay="350">
+                <h2 class="text-lg font-heading font-semibold text-white">
+                    {{ t('public_title') }}
+                </h2>
+                <p class="text-xs text-zinc-400 mt-2">
+                    {{ t('public_desc') }}
+                </p>
+
+                <div class="space-y-3 mt-4 text-xs font-mono">
+                    <div class="p-3 bg-surface-base border border-surface-border rounded-lg">
+                        <span class="text-brand-500 font-bold block mb-1">Direct Raw URL (Hotlink / Media Stream):</span>
+                        <code class="text-zinc-200">GET {{ request.base_url }}f/{file_id}.{ext}</code>
+                        <p class="text-zinc-400 font-sans text-xs mt-1">HTTP 206 Partial Content (Range Seeking video scrubbing) & ETag 304 Caching support.</p>
+                    </div>
+
+                    <div class="p-3 bg-surface-base border border-surface-border rounded-lg">
+                        <span class="text-emerald-400 font-bold block mb-1">Web Gallery Viewer Page:</span>
+                        <code class="text-zinc-200">GET {{ request.base_url }}v/{file_id}</code>
+                        <p class="text-zinc-400 font-sans text-xs mt-1">Responsive media gallery web interface with video player, metadata, and quick copy links.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Code Examples in Python & JavaScript -->
+            <section id="examples" class="surface-card p-6" data-aos="fade-up" data-aos-delay="400">
+                <h2 class="text-lg font-heading font-semibold text-white mb-3">
+                    {{ t('examples_title') }}
+                </h2>
+
+                <!-- Python Example -->
+                <div class="space-y-2">
+                    <span class="text-xs font-mono text-brand-400 font-semibold block">Python (requests):</span>
+                    <pre class="bg-surface-base border border-surface-border rounded-lg p-4 text-xs font-mono text-zinc-300 overflow-x-auto">import requests
+
+API_KEY = "XST_your_api_key_here"
+BASE_URL = "{{ request.base_url }}"
+headers = {"Authorization": f"Bearer {API_KEY}"}
+
+# 1. Upload File (MP4, Image, Doc)
+with open("sample.mp4", "rb") as f:
+    r = requests.post(f"{BASE_URL}api/v1/files", headers=headers, files={"file": f})
+    data = r.json()
+    print("Direct URL:", data["data"]["url"])
+    file_id = data["data"]["id"]
+
+# 2. Get Metadata
+info = requests.get(f"{BASE_URL}api/v1/files/{file_id}", headers=headers).json()
+print("File Info:", info)
+
+# 3. List My Files
+my_files = requests.get(f"{BASE_URL}api/v1/me/files", headers=headers).json()
+print("Total Files:", len(my_files["data"]))
+</pre>
+                </div>
+
+                <!-- JavaScript / Node.js Example -->
+                <div class="space-y-2 mt-4">
+                    <span class="text-xs font-mono text-emerald-400 font-semibold block">JavaScript / Node.js (Fetch & FormData):</span>
+                    <pre class="bg-surface-base border border-surface-border rounded-lg p-4 text-xs font-mono text-zinc-300 overflow-x-auto">const fs = require('fs');
+const FormData = require('form-data');
+const axios = require('axios');
+
+const API_KEY = 'XST_your_api_key_here';
+const BASE_URL = '{{ request.base_url }}';
+
+async function uploadFile() {
+  const form = new FormData();
+  form.append('file', fs.createReadStream('photo.jpg'));
+
+  const res = await axios.post(`${BASE_URL}api/v1/files`, form, {
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`,
+      ...form.getHeaders()
+    }
+  });
+
+  console.log('Upload Result:', res.data);
+}
+
+uploadFile();</pre>
+                </div>
+            </section>
+
+            <!-- 8. Error Codes Table -->
+            <section id="errors" class="surface-card p-6" data-aos="fade-up" data-aos-delay="450">
+                <h2 class="text-lg font-heading font-semibold text-white mb-3">
+                    {{ t('errors_title') }}
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs font-mono">
+                        <thead class="text-zinc-500 border-b border-surface-border uppercase text-[11px]">
+                            <tr>
+                                <th class="py-2 px-3">Status Code</th>
+                                <th class="py-2 px-3">Description</th>
+                                <th class="py-2 px-3 font-sans">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-surface-border text-zinc-300">
+                            <tr>
+                                <td class="py-2.5 px-3 text-emerald-400 font-bold">200 OK</td>
+                                <td class="py-2.5 px-3">Request processed successfully.</td>
+                                <td class="py-2.5 px-3 font-sans text-zinc-400">Standard success.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2.5 px-3 text-emerald-400 font-bold">206 Partial Content</td>
+                                <td class="py-2.5 px-3">Media range stream seeking.</td>
+                                <td class="py-2.5 px-3 font-sans text-zinc-400">Normal for video/audio players.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2.5 px-3 text-yellow-400 font-bold">304 Not Modified</td>
+                                <td class="py-2.5 px-3">ETag cache matched.</td>
+                                <td class="py-2.5 px-3 font-sans text-zinc-400">0 latency, saves 100% bandwidth.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2.5 px-3 text-red-400 font-bold">401 Unauthorized</td>
+                                <td class="py-2.5 px-3">Invalid or missing API Key.</td>
+                                <td class="py-2.5 px-3 font-sans text-zinc-400">Check Authorization Bearer token header.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2.5 px-3 text-red-400 font-bold">404 Not Found</td>
+                                <td class="py-2.5 px-3">File or endpoint not found.</td>
+                                <td class="py-2.5 px-3 font-sans text-zinc-400">Check requested file_id.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2.5 px-3 text-red-400 font-bold">413 Payload Too Large</td>
+                                <td class="py-2.5 px-3">File size exceeds 40 MB limit.</td>
+                                <td class="py-2.5 px-3 font-sans text-zinc-400">Compress file under 40 MB.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2.5 px-3 text-red-400 font-bold">500 Internal Error</td>
+                                <td class="py-2.5 px-3">Server / Telegram API communication error.</td>
+                                <td class="py-2.5 px-3 font-sans text-zinc-400">System error handler.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </article>
+    </div>
+</main>
+{% endblock %}

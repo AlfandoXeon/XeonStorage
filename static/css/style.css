@@ -1,0 +1,84 @@
+/* ==========================================================================
+   XeonStorage Core Stylesheet
+   ========================================================================== */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0c0d0f;
+    color: #f4f4f5;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.font-heading {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.02em;
+}
+
+/* Card & Surface Panels */
+.surface-card {
+    background: #131518;
+    border: 1px solid #24272e;
+    border-radius: 12px;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.surface-card:hover {
+    border-color: #383c46;
+}
+
+/* Dropzone States */
+.dropzone-active {
+    border-color: #dc2626 !important;
+    background: #191416 !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #dc2626;
+    color: #ffffff;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.btn-primary:hover {
+    background-color: #b91c1c;
+}
+
+.btn-secondary {
+    background-color: #1a1c21;
+    border: 1px solid #282b33;
+    color: #e4e4e7;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #24272f;
+    border-color: #3b3f4b;
+}
+
+/* Modal Backdrop */
+.modal-backdrop {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0c0d0f;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #24272e;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3f4451;
+}

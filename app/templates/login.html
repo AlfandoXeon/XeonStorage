@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{{ t('login_heading') if mode=="login" else t('register_heading') }} • {{ t('brand_name') }}{% endblock %}
+
+{% block content %}
+<main class="max-w-md mx-auto px-5 py-16">
+    <div class="surface-card p-8 relative">
+        <div class="text-center mb-6">
+            <img src="/icon/icon.png" alt="XeonStorage Logo" class="w-12 h-12 rounded-xl mx-auto mb-3 shadow-sm border border-surface-border object-contain">
+            <h1 class="text-2xl font-bold font-heading text-white">
+                {{ t('login_heading') if mode=="login" else t('register_heading') }}
+            </h1>
+            <p class="text-xs text-zinc-400 mt-1">
+                {{ t('login_subtitle') if mode=="login" else t('register_subtitle') }}
+            </p>
+        </div>
+
+        {% if error %}
+        <div class="mb-5 p-3 rounded-lg bg-red-950/40 border border-red-900/60 text-red-400 text-xs font-mono flex items-center gap-2">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"></path>
+            </svg>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <form method="post" action="/{{ mode }}" class="space-y-4">
+            {% if mode=="register" %}
+            <div>
+                <label class="block text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-1.5">{{ t('label_username') }}</label>
+                <input name="username" required placeholder="username" class="w-full bg-surface-base border border-surface-border rounded-lg px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-brand-600 transition">
+            </div>
+            <div>
+                <label class="block text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-1.5">{{ t('label_email') }}</label>
+                <input name="email" type="email" required placeholder="name@domain.com" class="w-full bg-surface-base border border-surface-border rounded-lg px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-brand-600 transition">
+            </div>
+            {% else %}
+            <div>
+                <label class="block text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-1.5">{{ t('label_login_field') }}</label>
+                <input name="login" required placeholder="username / email" class="w-full bg-surface-base border border-surface-border rounded-lg px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-brand-600 transition">
+            </div>
+            {% endif %}
+
+            <div>
+                <label class="block text-[11px] font-mono text-zinc-400 uppercase tracking-wider mb-1.5">{{ t('label_password') }}</label>
+                <input name="password" type="password" required placeholder="•••••••• ({{ t('password_hint') }})" class="w-full bg-surface-base border border-surface-border rounded-lg px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-brand-600 transition">
+            </div>
+
+            <button type="submit" class="w-full btn-primary rounded-lg py-2.5 text-xs font-medium tracking-wide mt-2">
+                {{ t('btn_submit_login') if mode=="login" else t('btn_submit_register') }}
+            </button>
+        </form>
+
+        <div class="mt-6 pt-5 border-t border-surface-border text-center text-xs text-zinc-500">
+            {% if mode=="login" %}
+                {{ t('ask_no_account') }} <a class="text-brand-500 hover:text-brand-600 font-medium ml-1" href="/register">{{ t('link_register_now') }}</a>
+            {% else %}
+                {{ t('ask_has_account') }} <a class="text-brand-500 hover:text-brand-600 font-medium ml-1" href="/login">{{ t('link_login_now') }}</a>
+            {% endif %}
+        </div>
+    </div>
+</main>
+{% endblock %}
