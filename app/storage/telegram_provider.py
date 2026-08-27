@@ -5,6 +5,28 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
+class TelethonStreamAdapter:
+    """
+    Wraps any stream/file-like object ensuring .name is always a string.
+    This prevents Telethon from crashing with TypeError: expected str, bytes or os.PathLike object, not int
+    when SpooledTemporaryFile on Linux uses an integer descriptor as its name.
+    """
+    def __init__(self, stream, filename: str):
+        self._stream = stream
+        self.name = str(filename)
+
+    def read(self, *args, **kwargs):
+        return self._stream.read(*args, **kwargs)
+
+    def seek(self, *args, **kwargs):
+        return self._stream.seek(*args, **kwargs)
+
+    def tell(self, *args, **kwargs):
+        return self._stream.tell(*args, **kwargs)
+
+    def __iter__(self):
+        return iter(self._stream)
+
 class TelegramFileUnavailableError(Exception):
     """Raised when a file cannot be found or is no longer available on Telegram servers."""
     pass
@@ -58,7 +80,7 @@ class TelegramStorageProvider:
             
         # Jika ukuran lebih besar dari 20MB dan kredensial MTProto tersedia, gunakan Telethon (MTProto)
         if file_size >= 20 * 1024 * 1024 and self.api_id and self.api_hash and self.session_string:
-            return self._put_telethon(stream, clean_filename, mime_type)
+            return self._put_telethon(stream, clean_filename, mime_type, file_size)
         else:
             return self._put_bot_api(stream, clean_filename, mime_type)
 
@@ -89,20 +111,20 @@ class TelegramStorageProvider:
         except requests.RequestException as e:
             raise TelegramSystemError(f"Gagal mengunggah berkas ke server Telegram via HTTP API: {str(e)}")
 
-    def _put_telethon(self, stream, clean_filename: str, mime_type: str):
+    def _put_telethon(self, stream, clean_filename: str, mime_type: str, file_size: int = 0):
         try:
             # We must run the Telethon upload in a new event loop because we are in a synchronous context
             # that is executed within a threadpool by FastAPI.
             new_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(new_loop)
             try:
-                return new_loop.run_until_complete(self._async_put_telethon(stream, clean_filename, mime_type))
+                return new_loop.run_until_complete(self._async_put_telethon(stream, clean_filename, mime_type, file_size))
             finally:
                 new_loop.close()
         except Exception as e:
             raise TelegramSystemError(f"Gagal mengunggah berkas ke server Telegram via MTProto: {str(e)}")
 
-    async def _async_put_telethon(self, stream, clean_filename: str, mime_type: str):
+    async def _async_put_telethon(self, stream, clean_filename: str, mime_type: str, file_size: int = 0):
         from telethon import TelegramClient
         from telethon.sessions import StringSession
         from telethon.tl.types import DocumentAttributeFilename
@@ -121,11 +143,19 @@ class TelegramStorageProvider:
             
         # Ensure the stream is at the beginning
         stream.seek(0)
+        adapter = TelethonStreamAdapter(stream, clean_filename)
         
         try:
+            # Upload the file stream directly in chunks using known file_size
+            uploaded_file = await client.upload_file(
+                file=adapter,
+                file_name=clean_filename,
+                file_size=file_size if file_size > 0 else None
+            )
+            
             message = await client.send_file(
                 target_chat,
-                file=stream,
+                file=uploaded_file,
                 force_document=True,
                 attributes=[DocumentAttributeFilename(file_name=clean_filename)]
             )
@@ -134,14 +164,14 @@ class TelegramStorageProvider:
                 raise TelegramSystemError("Gagal mendapatkan objek dokumen setelah upload MTProto.")
                 
             message_id = str(message.id)
-            file_size = message.document.size
+            doc_size = message.document.size
             file_id = "" 
             
             storage_key = f"{message_id}:{file_id}" if file_id else message_id
             
             return {
                 "storage_key": storage_key,
-                "size": file_size
+                "size": doc_size
             }
         finally:
             await client.disconnect()
