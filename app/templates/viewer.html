@@ -73,6 +73,26 @@
                     Browser Anda tidak mendukung pemutar video HTML5.
                 </video>
             </div>
+
+            <!-- Unsupported Codec / Format Fallback Notice -->
+            <div id="videoErrorNotice" class="hidden p-4 rounded-xl bg-surface-subtle border border-amber-500/30 text-xs text-zinc-300 space-y-2 text-center">
+                <p class="font-medium text-amber-400 flex items-center justify-center gap-1.5">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"></path>
+                    </svg>
+                    <span>Format Video ({{ file.extension|upper if file.extension else 'VIDEO' }}) Tidak Didukung Pemutar Web</span>
+                </p>
+                <p class="text-zinc-400 text-[11px] max-w-md mx-auto">
+                    Browser Anda tidak memiliki decoder bawaan untuk format ini. Silakan unduh berkas untuk diputar di aplikasi media player seperti <b>VLC Player</b>, atau unggah dalam format standar <b>.mp4 / .webm</b>.
+                </p>
+                <a href="{{ direct_url }}" download="{{ file.original_name }}" class="btn-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
+                    </svg>
+                    <span>{{ t('viewer_download_btn') }} ({{ "%.2f"|format(file.size/1024/1024) }} MB)</span>
+                </a>
+            </div>
+
             <div class="flex items-center justify-between text-xs font-mono text-zinc-400 px-1">
                 <div class="flex items-center gap-2">
                     <span class="px-2 py-0.5 rounded bg-brand-950/60 text-brand-400 border border-brand-800/40 text-[10px] font-bold uppercase">
@@ -207,6 +227,23 @@
 </main>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const vid = document.getElementById('galleryVideoPlayer');
+        const notice = document.getElementById('videoErrorNotice');
+        if (vid && notice) {
+            vid.addEventListener('error', function() {
+                notice.classList.remove('hidden');
+            });
+            // If source itself errors
+            const src = vid.querySelector('source');
+            if (src) {
+                src.addEventListener('error', function() {
+                    notice.classList.remove('hidden');
+                });
+            }
+        }
+    });
+
     function copyFieldValue(fieldId, btn) {
         const field = document.getElementById(fieldId);
         if (!field || !field.value) return;

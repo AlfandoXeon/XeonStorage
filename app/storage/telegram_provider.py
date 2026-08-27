@@ -183,7 +183,7 @@ class TelegramStorageProvider:
 
         try:
             parts = key.split(":", 1)
-            file_id = parts[1] if len(parts) > 1 else parts[0]
+            file_id = parts[1] if len(parts) > 1 else ""
             
             if not file_id:
                 # If file_id is empty (from MTProto upload), we can't easily check via Bot API getFile.
@@ -238,7 +238,7 @@ class TelegramStorageProvider:
 
         parts = key.split(":", 1)
         message_id = parts[0]
-        file_id = parts[1] if len(parts) > 1 else parts[0]
+        file_id = parts[1] if len(parts) > 1 else ""
 
         if file_id:
             try:
