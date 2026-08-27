@@ -18,18 +18,9 @@ class FileService:
         ext = Path(name).suffix.lower().lstrip(".") or None
         fid = secrets.token_urlsafe(7).replace("-", "a").replace("_", "b")
 
-        # 1. Instantly write to local high-speed disk cache FIRST
-        local_cache_path = self.cache_dir / f"{fid}.bin"
+        # Directly stream uploaded file to storage provider (Zero Cache Disk Overhead)
         upload.file.seek(0)
-        with open(local_cache_path, "wb") as f_out:
-            shutil.copyfileobj(upload.file, f_out, length=256 * 1024)
-
-        # Enforce LRU size limit to prevent Render disk overflow
-        self.cache_mgr.enforce_size_limit()
-
-        # 2. Upload to storage provider (Telegram / Local) using the local cached copy
-        with open(local_cache_path, "rb") as f_in:
-            result = self.storage.put(f_in, name, mime)
+        result = self.storage.put(upload.file, name, mime)
 
         record = {
             "id": fid,
@@ -37,7 +28,7 @@ class FileService:
             "original_name": name,
             "extension": ext,
             "mime_type": mime,
-            "size": result["size"] or local_cache_path.stat().st_size,
+            "size": result.get("size", 0),
             "storage_provider": self.storage.name,
             "storage_key": result["storage_key"],
             "created_at": datetime.now(timezone.utc).isoformat()

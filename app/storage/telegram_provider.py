@@ -45,9 +45,14 @@ class TelegramStorageProvider:
 
         clean_filename = os.path.basename(filename or "file")
         
+        file_size = 0
         try:
-            # Check file size if stream is a file
-            file_size = os.fstat(stream.fileno()).st_size
+            if hasattr(stream, "seek") and hasattr(stream, "tell"):
+                stream.seek(0, os.SEEK_END)
+                file_size = stream.tell()
+                stream.seek(0)
+            elif hasattr(stream, "fileno"):
+                file_size = os.fstat(stream.fileno()).st_size
         except Exception:
             file_size = 0
             
