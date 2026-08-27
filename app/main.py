@@ -34,8 +34,14 @@ db = Database(s)
 users = UserRepository(db)
 keys = ApiKeyRepository(db)
 files = FileRepository(db)
-storage = (TelegramStorageProvider(s.telegram_api_base, s.telegram_bot_token, s.resolved_telegram_chat_id)
-         if s.storage_provider == "telegram" else LocalStorageProvider(s.local_storage_path))
+storage = (TelegramStorageProvider(
+    api_base=s.telegram_api_base,
+    bot_token=s.telegram_bot_token,
+    chat_id=s.resolved_telegram_chat_id,
+    api_id=s.telegram_api_id,
+    api_hash=s.telegram_api_hash,
+    session_string=s.telegram_session_string
+) if s.storage_provider == "telegram" else LocalStorageProvider(s.local_storage_path))
 cache_mgr = CacheManager(cache_dir="./data/cache", max_size_mb=s.cache_max_size_mb, ttl_hours=s.cache_ttl_hours)
 file_service = FileService(files, storage, cache_mgr=cache_mgr)
 auth = AuthService(users, keys, s)
@@ -87,6 +93,87 @@ app.include_router(health_router)
 app.include_router(api_router)
 app.include_router(web_router)
 app.include_router(public_router)
+
+from fastapi import Request, Response
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.responses import JSONResponse, PlainTextResponse
+from app.controllers.web import get_context
+from app.dependencies import get
+
+@app.exception_handler(404)
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+    if exc.status_code == 404:
+        path = request.url.path
+        # Return JSON 404 for API requests
+        if path.startswith("/api/") or "application/json" in request.headers.get("accept", ""):
+            return JSONResponse(
+                status_code=404,
+                content={"success": False, "error": str(exc.detail) if exc.detail != "Not Found" else "Endpoint or file not found"}
+            )
+        
+        # Return Beautiful HTML 404 for Web Browser requests
+        try:
+            templates = get("templates")
+            return templates.TemplateResponse(
+                request,
+                "404.html",
+                get_context(request, {"path": path}),
+                status_code=404
+            )
+        except Exception:
+            return JSONResponse(status_code=404, content={"detail": "404 Not Found"})
+            
+    if request.url.path.startswith("/api/") or "application/json" in request.headers.get("accept", ""):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"success": False, "error": str(exc.detail)}
+        )
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+
+@app.get("/robots.txt", include_in_schema=False)
+def robots_txt(request: Request):
+    host = str(request.base_url).rstrip("/")
+    content = f"""User-agent: *
+Allow: /
+Allow: /about
+Allow: /docs-page
+Disallow: /f/
+Disallow: /v/
+Disallow: /view/
+Disallow: /gallery/
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /api/
+Disallow: /web/
+
+Sitemap: {host}/sitemap.xml
+"""
+    return Response(content=content, media_type="text/plain")
+
+@app.get("/sitemap.xml", include_in_schema=False)
+def sitemap_xml(request: Request):
+    host = str(request.base_url).rstrip("/")
+    xml_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{host}/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>{host}/about</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>{host}/docs-page</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
+"""
+    return Response(content=xml_content, media_type="application/xml")
 
 @app.get("/health")
 def health():

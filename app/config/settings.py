@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     app_host: str = "127.0.0.1"
     app_port: int = 8000
     default_language: str = "en"
-    max_upload_size_mb: int = 40
+    max_upload_size_mb: int = 1500
     session_secret: str = "CHANGE_ME_IN_PRODUCTION"
 
     database_url: str = "sqlite:///./data/xeonstorage.db"
@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     telegram_chat_id: str = ""
     telegram_channel_id: str = ""
     telegram_api_base: str = "https://api.telegram.org"
+    telegram_api_id: int = 0
+    telegram_api_hash: str = ""
+    telegram_session_string: str = ""
     telegram_storage_enabled: bool = True
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=False, extra="ignore")

@@ -4,12 +4,17 @@ TRANSLATIONS = {
         "brand_name": "XeonStorage",
         "nav_about": "Tentang",
         "nav_docs": "Dokumentasi API",
+        "nav_developer": "Pengembang",
         "nav_dashboard": "Dashboard",
+        "nav_api_keys": "API Keys",
         "nav_settings": "Pengaturan",
         "nav_login": "Masuk",
         "nav_register": "Daftar",
         "nav_logout": "Keluar",
         "footer_tagline": "Penyimpanan Berkas Cloud Cepat & Terpusat",
+        "dev_developed_by": "Dikembangkan oleh: AlfandoXeon",
+        "dev_btn_github": "GitHub",
+        "dev_btn_website": "Website Dev",
 
         # Settings
         "settings_title": "Pengaturan Akun",
@@ -30,8 +35,8 @@ TRANSLATIONS = {
         "hero_subtitle": "Tarik dan lepas berkas Anda di bawah untuk mengunggah ke cloud penyimpanan terpusat.",
         "drop_title": "Tarik & Lepas Berkas ke Sini",
         "drop_sub": "atau klik untuk memilih dari perangkat",
-        "max_size_hint": "Maksimum 40 MB per berkas",
-        "size_limit_error": "Ukuran berkas melebihi batas maksimum 40 MB.",
+        "max_size_hint": "Maksimum 1.5 GB per berkas",
+        "size_limit_error": "Ukuran berkas melebihi batas maksimum 1.5 GB.",
         "auth_upload_notice": "Silakan masuk atau buat akun terlebih dahulu untuk mengunggah berkas.",
         "auth_required_title": "Masuk Diperlukan untuk Mengunggah",
         "auth_required_desc": "Silakan masuk atau buat akun baru untuk mulai mengunggah dan mengelola berkas Anda.",
@@ -53,6 +58,13 @@ TRANSLATIONS = {
         "feat_3_badge": "03 / DEVELOPER API",
         "feat_3_title": "Integrasi REST API",
         "feat_3_desc": "REST API sederhana dengan autentikasi API Key untuk bot Telegram, CLI, dan otomasi backend.",
+
+        # 404 Page
+        "not_found_badge": "ERROR 404 • HALAMAN TIDAK DITEMUKAN",
+        "not_found_title": "Waduh! Halaman Hilang",
+        "not_found_desc": "Halaman atau alamat URL yang Anda tuju tidak ditemukan atau mungkin sudah dipindahkan.",
+        "btn_back_home": "Kembali ke Beranda",
+        "btn_view_docs": "Lihat Dokumentasi API",
 
         # About
         "about_tag": "TENTANG PLATFORM",
@@ -165,7 +177,7 @@ TRANSLATIONS = {
         "auth_title": "01. Autentikasi API",
         "auth_desc": "Semua permintaan ke endpoint /api/v1/* wajib menyertakan token API Key pada HTTP Header Authorization dengan skema Bearer:",
         "upload_title": "02. Unggah Berkas",
-        "upload_desc": "Mengunggah berkas biner (Gambar, Video MP4/MOV, Audio, Dokumen) ke cloud storage (Maksimum 40 MB per berkas).",
+        "upload_desc": "Mengunggah berkas biner (Gambar, Video MP4/MOV, Audio, Dokumen) ke cloud storage (Maksimum 1.5 GB per berkas).",
         "metadata_title": "03. Metadata Berkas",
         "metadata_desc": "Mengambil informasi metadata detail dari berkas yang ditentukan.",
         "list_title": "04. Riwayat Berkas Akun",
@@ -189,12 +201,17 @@ TRANSLATIONS = {
         "brand_name": "XeonStorage",
         "nav_about": "About",
         "nav_docs": "API Docs",
+        "nav_developer": "Developer",
         "nav_dashboard": "Dashboard",
+        "nav_api_keys": "API Keys",
         "nav_settings": "Settings",
         "nav_login": "Sign In",
         "nav_register": "Register",
         "nav_logout": "Log Out",
         "footer_tagline": "Fast & Centralized Cloud File Storage",
+        "dev_developed_by": "Developed by: AlfandoXeon",
+        "dev_btn_github": "GitHub",
+        "dev_btn_website": "Dev Website",
 
         # Settings
         "settings_title": "Account Settings",
@@ -215,8 +232,8 @@ TRANSLATIONS = {
         "hero_subtitle": "Drag and drop your files below to upload to fast centralized cloud storage.",
         "drop_title": "Drag & Drop Files Here",
         "drop_sub": "or click to browse from your device",
-        "max_size_hint": "Maximum 40 MB per file",
-        "size_limit_error": "File size exceeds the maximum 40 MB limit.",
+        "max_size_hint": "Maximum 1.5 GB per file",
+        "size_limit_error": "File size exceeds the maximum 1.5 GB limit.",
         "auth_upload_notice": "Please sign in or create an account to upload files.",
         "auth_required_title": "Sign In Required to Upload",
         "auth_required_desc": "Please sign in or create an account to start uploading and managing files.",
@@ -238,6 +255,13 @@ TRANSLATIONS = {
         "feat_3_badge": "03 / DEVELOPER API",
         "feat_3_title": "Developer REST API",
         "feat_3_desc": "Simple RESTful endpoints with secure API Key authentication for Telegram bots, CLIs, and automations.",
+
+        # 404 Page
+        "not_found_badge": "ERROR 404 • PAGE NOT FOUND",
+        "not_found_title": "Oops! Page Not Found",
+        "not_found_desc": "The page or destination URL you requested could not be found or may have been moved.",
+        "btn_back_home": "Back to Home",
+        "btn_view_docs": "View API Documentation",
 
         # About
         "about_tag": "ABOUT THE PLATFORM",
@@ -350,7 +374,7 @@ TRANSLATIONS = {
         "auth_title": "01. API Authentication",
         "auth_desc": "All requests to /api/v1/* endpoints must include your API Key in the Authorization HTTP header with Bearer scheme:",
         "upload_title": "02. Upload File",
-        "upload_desc": "Upload binary files (Images, MP4/MOV Videos, Audio, Documents) to cloud storage (Maximum 40 MB per file).",
+        "upload_desc": "Upload binary files (Images, MP4/MOV Videos, Audio, Documents) to cloud storage (Maximum 1.5 GB per file).",
         "metadata_title": "03. File Metadata",
         "metadata_desc": "Retrieve detailed metadata information for a specific file.",
         "list_title": "04. Account File History",

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}404 • {{ t('not_found_title') }} - {{ t('brand_name') }}{% endblock %}
+
+{% block content %}
+<main class="flex-grow flex items-center justify-center relative overflow-hidden py-20 px-4">
+    <!-- Ambient Background Glow -->
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-red-600/10 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+    <div class="absolute bottom-10 right-1/4 w-[400px] h-[250px] bg-red-900/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+
+    <div class="max-w-xl w-full text-center" data-aos="zoom-in" data-aos-duration="600">
+        <!-- 404 Glowing Badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-red-500/30 bg-red-500/10 text-red-400 text-[11px] font-mono tracking-wider uppercase mb-6 shadow-sm shadow-red-500/20">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+            {{ t('not_found_badge') }}
+        </div>
+
+        <!-- Big 404 Visual -->
+        <div class="relative mb-6 select-none">
+            <h1 class="text-8xl sm:text-9xl font-heading font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-zinc-300 to-zinc-700 opacity-90 drop-shadow-2xl">
+                404
+            </h1>
+            <div class="absolute inset-0 flex items-center justify-center opacity-20 pointer-events-none">
+                <svg class="w-32 h-32 text-red-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Title & Subtitle -->
+        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white mb-3">
+            {{ t('not_found_title') }}
+        </h2>
+        <p class="text-zinc-400 text-sm sm:text-base leading-relaxed mb-6 max-w-md mx-auto">
+            {{ t('not_found_desc') }}
+        </p>
+
+        <!-- Requested Path Monospace Pill (if available) -->
+        {% if path %}
+        <div class="mb-8 inline-block max-w-full">
+            <div class="bg-surface-panel border border-surface-border rounded-lg px-3.5 py-2 text-xs font-mono text-zinc-400 flex items-center gap-2 overflow-hidden text-ellipsis shadow-inner">
+                <svg class="w-3.5 h-3.5 text-zinc-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-red-400 shrink-0">Path:</span>
+                <span class="truncate text-zinc-300">{{ path }}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Navigation CTAs -->
+        <div class="flex flex-wrap items-center justify-center gap-3">
+            <a href="/" class="btn-primary px-6 py-2.5 rounded-lg text-sm font-medium tracking-wide shadow-lg shadow-red-600/20 hover:shadow-red-600/40 transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                {{ t('btn_back_home') }}
+            </a>
+            <a href="/docs-page" class="px-5 py-2.5 rounded-lg text-sm font-medium text-zinc-300 bg-surface-panel border border-surface-border hover:border-surface-borderHover hover:text-white transition flex items-center gap-2">
+                <svg class="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                {{ t('btn_view_docs') }}
+            </a>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, Form, UploadFile, File, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from app.dependencies import get
 from app.i18n.translations import get_translator
+from app.config.settings import get_settings
 
 router = APIRouter()
 
@@ -23,7 +24,8 @@ def get_context(request: Request, extra: dict = None) -> dict:
         "user_id": user(request),
         "username": request.session.get("username"),
         "t": t,
-        "current_lang": current_lang
+        "current_lang": current_lang,
+        "max_upload_size_mb": get_settings().max_upload_size_mb
     }
     if extra:
         ctx.update(extra)
@@ -45,7 +47,7 @@ def home(request: Request):
     )
 
 @router.post("/upload")
-async def upload_ajax(request: Request, file: UploadFile = File(...)):
+def upload_ajax(request: Request, file: UploadFile = File(...)):
     """Upload endpoint: Requires user login"""
     uid = user(request)
     lang_code = request.session.get("lang", "id")
@@ -62,12 +64,13 @@ async def upload_ajax(request: Request, file: UploadFile = File(...)):
             "require_auth": True
         })
 
-    max_bytes = 40 * 1024 * 1024
+    max_mb = get_settings().max_upload_size_mb
+    max_bytes = max_mb * 1024 * 1024
     if file.size and file.size > max_bytes:
         err_msg = (
-            "File size exceeds the 40 MB limit."
+            f"File size exceeds the {max_mb} MB limit."
             if lang_code == "en"
-            else "Ukuran berkas melebihi batas maksimum 40 MB."
+            else f"Ukuran berkas melebihi batas maksimum {max_mb} MB."
         )
         return JSONResponse({"success": False, "error": err_msg}, status_code=413)
 
@@ -101,7 +104,8 @@ def web_upload(request: Request, file: UploadFile = File(...)):
     if not uid:
         return RedirectResponse("/?auth=login", 303)
 
-    max_bytes = 40 * 1024 * 1024
+    max_mb = get_settings().max_upload_size_mb
+    max_bytes = max_mb * 1024 * 1024
     if file.size and file.size > max_bytes:
         return RedirectResponse("/dashboard?error=size_limit", 303)
 
@@ -223,13 +227,26 @@ def dashboard(request: Request):
         return RedirectResponse("/?auth=login", 303)
     stats = get("files").stats(uid)
     files = get("files").list(uid)
-    keys = get("keys").list_for_user(uid)
     return get("templates").TemplateResponse(
         request,
         "dashboard.html",
         get_context(request, {
             "stats": stats,
-            "files": files,
+            "files": files
+        })
+    )
+
+@router.get("/api-keys", response_class=HTMLResponse)
+@router.get("/keys", response_class=HTMLResponse)
+def api_keys_page(request: Request):
+    uid = user(request)
+    if not uid:
+        return RedirectResponse("/?auth=login", 303)
+    keys = get("keys").list_for_user(uid)
+    return get("templates").TemplateResponse(
+        request,
+        "keys.html",
+        get_context(request, {
             "keys": keys,
             "new_key": request.session.pop("new_key", None)
         })
@@ -242,7 +259,8 @@ def create_key(request: Request, name: str = Form(...)):
         return RedirectResponse("/?auth=login", 303)
     raw = get("auth").create_api_key(uid, name)
     request.session["new_key"] = raw
-    return RedirectResponse("/dashboard", 303)
+    referer = request.headers.get("referer", "/api-keys")
+    return RedirectResponse(referer if "api-keys" in referer or "keys" in referer else "/api-keys", 303)
 
 @router.post("/web/key/revoke/{key_id}")
 def revoke_key(request: Request, key_id: str):
@@ -250,7 +268,8 @@ def revoke_key(request: Request, key_id: str):
     if not uid:
         return RedirectResponse("/?auth=login", 303)
     get("keys").revoke(key_id, uid)
-    return RedirectResponse("/dashboard", 303)
+    referer = request.headers.get("referer", "/api-keys")
+    return RedirectResponse(referer if "api-keys" in referer or "keys" in referer else "/api-keys", 303)
 
 @router.get("/about", response_class=HTMLResponse)
 def about(request: Request):

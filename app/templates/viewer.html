@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block title %}{{ file.original_name if file_found else t('viewer_not_found') }} • {{ t('brand_name') }}{% endblock %}
 
+{% block meta_robots %}
+<!-- Privacy Protection: Prevent Google and Search Engines from Indexing Private Gallery Files -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+{% endblock %}
+
 {% block content %}
 <main class="max-w-4xl mx-auto px-4 sm:px-5 py-8 md:py-12 space-y-6">
     {% if not file_found %}

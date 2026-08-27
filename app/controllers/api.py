@@ -10,11 +10,14 @@ def api_user(request):
     if not k: raise HTTPException(401,"Invalid API key")
     return k["user_id"]
 
+from app.config.settings import get_settings
+
 @router.post("/files")
 def upload(request: Request, file: UploadFile = File(...)):
-    max_bytes = 40 * 1024 * 1024
+    max_mb = get_settings().max_upload_size_mb
+    max_bytes = max_mb * 1024 * 1024
     if file.size and file.size > max_bytes:
-        raise HTTPException(413, "File size exceeds the 40 MB limit.")
+        raise HTTPException(413, f"File size exceeds the {max_mb} MB limit.")
     uid = api_user(request)
     r = get("files").upload(file, uid)
     host = str(request.base_url).rstrip("/")

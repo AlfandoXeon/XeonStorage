@@ -31,7 +31,7 @@ If the API Key is missing, invalid, or revoked, the server will return `401 Unau
 
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :---: |
-| `POST` | `/api/v1/files` | Upload a new file (Max **40 MB**) | ✅ Yes |
+| `POST` | `/api/v1/files` | Upload a new file (Max **1.5 GB**) | ✅ Yes |
 | `GET` | `/api/v1/files/{file_id}` | Retrieve file metadata JSON | ✅ Yes |
 | `DELETE` | `/api/v1/files/{file_id}` | Delete a file permanently | ✅ Yes |
 | `GET` | `/api/v1/me/files` | List all files owned by your account | ✅ Yes |
@@ -48,7 +48,7 @@ Uploads a binary media file (Image, MP4/MOV Video, Audio, Document) to cloud sto
 - **Headers:** `Authorization: Bearer <API_KEY>`
 - **Body:** `multipart/form-data`
   - `file`: Binary file stream
-- **Size Limit:** Maximum **40 MB**
+- **Size Limit:** Maximum **1.5 GB**
 
 #### cURL Example:
 ```bash
@@ -182,7 +182,7 @@ upload();
 | `304 Not Modified` | Cache Hit | ETag matched, 0 bandwidth consumed |
 | `401 Unauthorized` | Auth Failed | Invalid, revoked, or missing API Key |
 | `404 Not Found` | Not Found | Requested file or endpoint does not exist |
-| `413 Payload Too Large`| Size Exceeded | File exceeds maximum limit of 40 MB |
+| `413 Payload Too Large`| Size Exceeded | File exceeds maximum limit of 1.5 GB |
 | `500 Internal Error` | Server Error | Failed to communicate with cloud backend |
 
 ---
@@ -213,7 +213,7 @@ Jika API Key tidak disertakan atau salah, server mengembalikan status `401 Unaut
 
 | Method | Endpoint | Keterangan | Auth Required |
 | :--- | :--- | :--- | :---: |
-| `POST` | `/api/v1/files` | Unggah berkas baru (Maks **40 MB**) | ✅ Ya |
+| `POST` | `/api/v1/files` | Unggah berkas baru (Maks **1.5 GB**) | ✅ Ya |
 | `GET` | `/api/v1/files/{file_id}` | Ambil metadata berkas | ✅ Ya |
 | `DELETE` | `/api/v1/files/{file_id}` | Hapus berkas | ✅ Ya |
 | `GET` | `/api/v1/me/files` | Daftar semua berkas milik akun Anda | ✅ Ya |
@@ -230,7 +230,7 @@ Mengunggah berkas ke cloud Telegram dengan akselerasi cache lokal server.
 - **Header:** `Authorization: Bearer <API_KEY>`
 - **Body:** `multipart/form-data`
   - `file`: Berkas biner (Gambar, Video MP4/MOV, Audio, Dokumen)
-- **Batas Ukuran:** Maksimum **40 MB**
+- **Batas Ukuran:** Maksimum **1.5 GB**
 
 #### Contoh cURL:
 ```bash
@@ -314,5 +314,5 @@ curl -X DELETE https://xeonstorage.onrender.com/api/v1/files/BUacSvpA4g \
 | `304 Not Modified` | Cache Hit | Menggunakan cache browser (0 Bandwidth) |
 | `401 Unauthorized` | Autentikasi Gagal | API Key tidak valid atau tidak disertakan |
 | `404 Not Found` | Tidak Ditemukan | Berkas atau endpoint tidak ditemukan |
-| `413 Payload Too Large`| Ukuran Terlalu Besar | Berkas melebihi batas 40 MB |
+| `413 Payload Too Large`| Ukuran Terlalu Besar | Berkas melebihi batas 1.5 GB |
 | `500 Internal Error` | Kesalahan Server | Gagal menghubungi Telegram / database |

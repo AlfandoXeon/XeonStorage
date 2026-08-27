@@ -62,9 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function onFileSelected(file) {
-        const maxBytes = 40 * 1024 * 1024;
+        const maxMb = window.maxUploadSizeMb || 1500;
+        const maxBytes = maxMb * 1024 * 1024;
         if (file.size > maxBytes) {
-            const limitMsg = (window.i18nTexts && window.i18nTexts.sizeLimitError) || 'Ukuran berkas melebihi batas maksimum 40 MB.';
+            const limitMsg = (window.i18nTexts && window.i18nTexts.sizeLimitError) || `Ukuran berkas melebihi batas maksimum ${maxMb} MB.`;
             alert(limitMsg);
             return;
         }

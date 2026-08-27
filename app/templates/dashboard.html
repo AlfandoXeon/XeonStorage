@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block title %}{{ t('dash_title') }} • {{ t('brand_name') }}{% endblock %}
 
+{% block meta_robots %}
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+{% endblock %}
+
 {% block content %}
 <main class="max-w-6xl mx-auto px-4 sm:px-5 py-8 md:py-10 space-y-6">
     <!-- Top Header with AOS -->
@@ -13,7 +17,13 @@
                 {{ t('dash_welcome') }} <span class="text-brand-500">{{ username }}</span>
             </h1>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="/api-keys" class="btn-secondary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 border-brand-600/30 hover:border-brand-600">
+                <svg class="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"></path>
+                </svg>
+                <span>{{ t('nav_api_keys') }}</span>
+            </a>
             <a href="/" class="btn-secondary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
@@ -26,26 +36,8 @@
         </div>
     </div>
 
-    <!-- Alert for Newly Generated API Key -->
-    {% if new_key %}
-    <div class="p-4 rounded-xl border border-brand-600/40 bg-surface-panel text-zinc-200 space-y-2 shadow-lg" data-aos="zoom-in" data-aos-duration="500">
-        <div class="flex items-center gap-2 text-brand-500 font-medium text-xs font-mono">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"></path>
-            </svg>
-            <span>{{ t('dash_new_key_title') }}</span>
-        </div>
-        <div class="flex items-center gap-2">
-            <input type="text" id="newKeyField" value="{{ new_key }}" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 font-mono text-xs text-zinc-200 select-all">
-            <button onclick="copyNewKey()" class="btn-primary px-3.5 py-2 rounded-lg text-xs font-medium">
-                <span id="copyKeyText">{{ t('btn_copy') }}</span>
-            </button>
-        </div>
-    </div>
-    {% endif %}
-
     <!-- Storage Statistics Cards with AOS Stagger -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" data-aos="fade-up" data-aos-delay="100">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-aos="fade-up" data-aos-delay="100">
         <div class="surface-card p-5 hover:-translate-y-1 transition duration-200">
             <div class="text-zinc-500 text-xs font-mono uppercase tracking-wider">{{ t('dash_stat_files') }}</div>
             <div class="text-2xl font-bold font-heading text-white mt-1.5">{{ stats["files"] }}</div>
@@ -58,100 +50,61 @@
             </div>
         </div>
 
-        <div class="surface-card p-5 hover:-translate-y-1 transition duration-200">
-            <div class="text-zinc-500 text-xs font-mono uppercase tracking-wider">{{ t('dash_stat_keys') }}</div>
-            <div class="text-2xl font-bold font-heading text-white mt-1.5">{{ keys|length }}</div>
+        <div class="surface-card p-5 hover:-translate-y-1 transition duration-200 sm:col-span-2 lg:col-span-1 flex items-center justify-between">
+            <div>
+                <div class="text-zinc-500 text-xs font-mono uppercase tracking-wider">{{ t('nav_api_keys') }}</div>
+                <div class="text-xs text-zinc-400 mt-1">REST API Integration</div>
+            </div>
+            <a href="/api-keys" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1">
+                <span>{{ t('nav_api_keys') }} &rarr;</span>
+            </a>
         </div>
     </div>
 
-    <!-- Upload & API Key Grid with AOS -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" data-aos="fade-up" data-aos-delay="150">
-        <!-- Dashboard Dropzone -->
-        <section class="surface-card p-6 flex flex-col justify-between">
-            <div>
-                <h2 class="font-heading font-semibold text-base text-white flex items-center gap-2">
-                    <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
-                    </svg>
-                    <span>{{ t('dash_upload_title') }}</span>
-                </h2>
-                <p class="text-xs text-zinc-400 mt-1">{{ t('dash_upload_desc') }}</p>
-            </div>
-
-            <div id="dashDropzone" class="border-2 border-dashed border-surface-border hover:border-brand-600 rounded-xl p-8 text-center cursor-pointer transition mt-4 bg-surface-subtle/50 group">
-                <input type="file" id="dashFileInput" class="hidden">
-                <div id="dashIdle" class="space-y-2">
-                    <div class="w-10 h-10 mx-auto rounded-lg bg-surface-base border border-surface-border flex items-center justify-center text-zinc-400 group-hover:text-brand-500 group-hover:border-brand-600/50 transition duration-200">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path>
-                        </svg>
-                    </div>
-                    <p class="text-xs font-medium text-zinc-200">{{ t('dash_upload_idle') }}</p>
-                    <p class="text-[11px] text-zinc-500 font-mono">{{ t('dash_upload_sub') }}</p>
-                </div>
-                <div id="dashLoading" class="hidden space-y-3 py-2 w-full max-w-sm mx-auto">
-                    <!-- File Name & Spinner -->
-                    <div class="flex items-center justify-center gap-2">
-                        <div class="w-3.5 h-3.5 rounded-full border-2 border-surface-border border-t-brand-500 animate-spin flex-shrink-0"></div>
-                        <p id="dashUploadStatus" class="text-xs font-mono text-zinc-200 truncate max-w-[240px]">Uploading...</p>
-                    </div>
-
-                    <!-- Progress Bar Container -->
-                    <div class="w-full bg-surface-base rounded-full h-2.5 p-0.5 overflow-hidden border border-surface-border relative">
-                        <div id="dashProgressBar" class="bg-gradient-to-r from-brand-600 to-red-500 h-full rounded-full transition-all duration-150 relative shadow-sm" style="width: 0%"></div>
-                    </div>
-
-                    <!-- Stats Row: Percentage, Transferred Size, Upload Speed -->
-                    <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400 px-0.5">
-                        <span id="dashProgressPercent" class="text-brand-500 font-bold">0%</span>
-                        <span id="dashProgressSize" class="text-zinc-400">0 B / 0 B</span>
-                        <span id="dashProgressSpeed" class="text-emerald-400 font-medium">0 KB/s</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- API Keys Management -->
-        <section class="surface-card p-6">
-            <h2 class="font-heading font-semibold text-base text-white flex items-center gap-2">
-                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"></path>
+    <!-- Full-Width Dashboard Dropzone with AOS -->
+    <section class="surface-card p-6 sm:p-8 space-y-4" data-aos="fade-up" data-aos-delay="150">
+        <div>
+            <h2 class="font-heading font-semibold text-lg text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
                 </svg>
-                <span>{{ t('dash_keys_title') }}</span>
+                <span>{{ t('dash_upload_title') }}</span>
             </h2>
-            <p class="text-xs text-zinc-400 mt-1">{{ t('dash_keys_desc') }}</p>
+            <p class="text-xs sm:text-sm text-zinc-400 mt-1">{{ t('dash_upload_desc') }} (Max 1.5 GB)</p>
+        </div>
 
-            <form action="/web/key" method="post" class="flex flex-col sm:flex-row gap-2 mt-4">
-                <input name="name" required placeholder="{{ t('dash_key_placeholder') }}" class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-600">
-                <button class="btn-primary px-3.5 py-2 rounded-lg text-xs font-medium whitespace-nowrap">
-                    {{ t('dash_create_key') }}
-                </button>
-            </form>
-
-            <div class="mt-4 space-y-2 max-h-48 overflow-y-auto pr-1">
-                {% for k in keys %}
-                <div class="flex justify-between items-center bg-surface-subtle border border-surface-border rounded-lg p-2.5 text-xs">
-                    <div>
-                        <div class="font-medium text-zinc-200">{{ k["name"] }}</div>
-                        <div class="text-zinc-500 font-mono text-[10px]">{{ k["created_at"][:10] }}</div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        {% if k["active"] %}
-                        <span class="px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-800/40 font-mono text-[10px]">{{ t('dash_key_active') }}</span>
-                        <form action="/web/key/revoke/{{ k['id'] }}" method="post" onsubmit="return confirm('{{ t('dash_key_revoke_confirm') }}')">
-                            <button class="text-zinc-500 hover:text-red-400 text-xs transition underline">{{ t('dash_key_revoke_btn') }}</button>
-                        </form>
-                        {% else %}
-                        <span class="px-2 py-0.5 rounded bg-surface-base text-zinc-600 font-mono text-[10px]">{{ t('dash_key_revoked') }}</span>
-                        {% endif %}
-                    </div>
+        <div id="dashDropzone" class="border-2 border-dashed border-surface-border hover:border-brand-600 rounded-xl p-8 sm:p-12 text-center cursor-pointer transition bg-surface-subtle/40 hover:bg-surface-subtle/70 group">
+            <input type="file" id="dashFileInput" class="hidden">
+            <div id="dashIdle" class="space-y-3">
+                <div class="w-12 h-12 mx-auto rounded-xl bg-surface-base border border-surface-border flex items-center justify-center text-zinc-400 group-hover:text-brand-500 group-hover:border-brand-600/50 transition duration-200 shadow-sm">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path>
+                    </svg>
                 </div>
-                {% else %}
-                <div class="text-center py-4 text-xs font-mono text-zinc-500">{{ t('dash_no_keys') }}</div>
-                {% endfor %}
+                <p class="text-sm font-semibold text-zinc-200">{{ t('dash_upload_idle') }}</p>
+                <p class="text-xs text-zinc-500 font-mono">{{ t('dash_upload_sub') }}</p>
             </div>
-        </section>
-    </div>
+            <div id="dashLoading" class="hidden space-y-3 py-2 w-full max-w-md mx-auto">
+                <!-- File Name & Spinner -->
+                <div class="flex items-center justify-center gap-2">
+                    <div class="w-3.5 h-3.5 rounded-full border-2 border-surface-border border-t-brand-500 animate-spin flex-shrink-0"></div>
+                    <p id="dashUploadStatus" class="text-xs font-mono text-zinc-200 truncate max-w-[280px]">Uploading...</p>
+                </div>
+
+                <!-- Progress Bar Container -->
+                <div class="w-full bg-surface-base rounded-full h-2.5 p-0.5 overflow-hidden border border-surface-border relative">
+                    <div id="dashProgressBar" class="bg-gradient-to-r from-brand-600 to-red-500 h-full rounded-full transition-all duration-150 relative shadow-sm" style="width: 0%"></div>
+                </div>
+
+                <!-- Stats Row: Percentage, Transferred Size, Upload Speed -->
+                <div class="flex items-center justify-between text-xs font-mono text-zinc-400 px-0.5">
+                    <span id="dashProgressPercent" class="text-brand-500 font-bold">0%</span>
+                    <span id="dashProgressSize" class="text-zinc-400">0 B / 0 B</span>
+                    <span id="dashProgressSpeed" class="text-emerald-400 font-medium">0 KB/s</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Recent Files & History Section with AOS -->
     <section class="surface-card p-4 sm:p-6" data-aos="fade-up" data-aos-delay="200">
@@ -354,5 +307,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/dashboard.js"></script>
+<script src="/static/js/dashboard.js?v=2.1.0"></script>
 {% endblock %}

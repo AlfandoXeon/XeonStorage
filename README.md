@@ -14,7 +14,7 @@
 - 🌐 **Full Dual-Language (Bilingual)**: English by default with instantaneous toggle to Bahasa Indonesia (`EN` / `ID`).
 - 🖼️ **Dual Output Links**: Generates both raw **Direct Hotlinks** (`/f/{id}.ext`) and interactive **Web Gallery Pages** (`/v/{id}`).
 - 🔐 **User Management & Security**: Modal popup authentication, user settings page for password updates, and multi-key API management.
-- 📡 **Developer First REST API**: Complete RESTful API with Bearer token authentication and 40 MB max file size.
+- 📡 **Developer First REST API**: Complete RESTful API with Bearer token authentication and 1.5 GB max file size.
 - 🎨 **Modern SaaS Design System**: Tailwind CSS dark mode, glassmorphism, responsive UI, and AOS.js scroll animations.
 
 ---
