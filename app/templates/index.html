@@ -1,170 +1,715 @@
 {% extends "base.html" %}
-{% block title %}{{ t('brand_name') }} • {{ t('hero_title_1') }}{% endblock %}
+{% block title %}{{ t('brand_name') }} • {{ t('hero_title_1') }} {{ t('hero_title_2') }}{% endblock %}
 
 {% block content %}
-<main class="max-w-5xl mx-auto px-4 sm:px-5 py-10 md:py-16">
-    <!-- Hero Header with AOS -->
-    <div class="text-center mb-10" data-aos="fade-down" data-aos-duration="600">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-surface-border bg-surface-panel text-xs font-mono text-zinc-400 mb-5 shadow-sm">
-            <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
-            {{ t('badge_fast') }}
-        </div>
-        <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold font-heading tracking-tight text-white">
-            {{ t('hero_title_1') }} <br class="hidden sm:inline">
-            <span class="text-brand-500">{{ t('hero_title_2') }}</span>
-        </h1>
-        <p class="mt-4 text-zinc-400 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
-            {{ t('hero_subtitle') }}
-        </p>
-    </div>
+<div class="relative overflow-hidden">
+    <!-- Subtle Ambient Glow Background -->
+    <div class="pointer-events-none absolute -top-28 left-1/2 -translate-x-1/2 w-[700px] h-[380px] bg-brand-600/10 blur-[130px] rounded-full"></div>
+    <div class="pointer-events-none absolute top-[600px] -right-48 w-[450px] h-[450px] bg-brand-700/5 blur-[140px] rounded-full"></div>
 
-    <!-- Catbox-style Drag & Drop Upload Zone with AOS -->
-    <div class="max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100" data-aos-duration="700">
-        <div id="dropzone" class="surface-card border-2 border-dashed border-surface-border hover:border-brand-600 rounded-xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-200 relative group bg-surface-panel/70 hover:shadow-xl hover:shadow-brand-950/20">
-            <input type="file" id="fileInput" class="hidden">
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-16 relative z-10 space-y-24">
 
-            <!-- Idle State -->
-            <div id="dropzoneIdle" class="space-y-4">
-                <div class="w-14 h-14 mx-auto rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-400 group-hover:text-brand-500 group-hover:border-brand-600/50 transition duration-200 group-hover:scale-105">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-base font-semibold text-white font-heading">
-                        {{ t('drop_title') }}
-                    </p>
-                    <p class="text-xs text-zinc-400 mt-1">
-                        {{ t('drop_sub') }}
-                    </p>
-                    <p class="text-[11px] text-zinc-600 font-mono mt-2">
-                        {{ t('max_size_hint') }}
-                    </p>
-                </div>
+        <!-- ================================================================= -->
+        <!-- 1. HERO & UPLOAD SECTION                                          -->
+        <!-- ================================================================= -->
+        <section class="text-center max-w-4xl mx-auto" data-aos="fade-down" data-aos-duration="600">
+            <!-- Network Status Pill -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-surface-border bg-surface-panel/90 text-xs font-mono text-zinc-300 mb-6 shadow-sm backdrop-blur-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="tracking-wide">{{ t('badge_fast') }}</span>
             </div>
 
-            <!-- Uploading State -->
-            <div id="dropzoneLoading" class="hidden space-y-3 py-3 max-w-md mx-auto">
-                <div class="flex items-center justify-center gap-2">
-                    <div class="w-3.5 h-3.5 rounded-full border-2 border-surface-border border-t-brand-500 animate-spin flex-shrink-0"></div>
-                    <p id="uploadingFileName" class="text-xs font-mono text-zinc-200 truncate max-w-xs">{{ t('uploading') }}</p>
+            <!-- Main Punchy Headline -->
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-bold font-heading tracking-tight text-white leading-[1.15]">
+                {{ t('hero_title_1') }} <br class="hidden sm:inline">
+                <span class="bg-gradient-to-r from-red-500 via-brand-500 to-amber-500 bg-clip-text text-transparent">{{ t('hero_title_2') }}</span>
+            </h1>
+
+            <p class="mt-4 text-zinc-400 max-w-2xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed font-sans">
+                {{ t('hero_subtitle') }}
+            </p>
+
+            <!-- Quick Value Prop Checkmarks -->
+            <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mt-6 text-xs sm:text-sm text-zinc-400 font-mono">
+                <span class="inline-flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg>
+                    {{ t('hero_tag_1') }}
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg>
+                    {{ t('hero_tag_2') }}
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg>
+                    {{ t('hero_tag_3') }}
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg>
+                    {{ t('hero_tag_4') }}
+                </span>
+            </div>
+
+            <!-- Catbox-style Drag & Drop Upload Zone -->
+            <div id="uploadBoxArea" class="mt-8 max-w-2xl mx-auto text-left" data-aos="fade-up" data-aos-delay="100" data-aos-duration="700">
+                <div id="dropzone" class="surface-card border-2 border-dashed border-surface-border hover:border-brand-600 rounded-2xl p-8 sm:p-12 text-center cursor-pointer transition-all duration-200 relative group bg-surface-panel/80 hover:shadow-2xl hover:shadow-brand-950/30">
+                    <input type="file" id="fileInput" class="hidden">
+
+                    <!-- Idle State -->
+                    <div id="dropzoneIdle" class="space-y-4">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-400 group-hover:text-brand-500 group-hover:border-brand-600/50 transition duration-300 group-hover:scale-105 group-hover:rotate-1">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-base sm:text-lg font-semibold text-white font-heading">
+                                {{ t('drop_title') }}
+                            </p>
+                            <p class="text-xs sm:text-sm text-zinc-400 mt-1 font-sans">
+                                {{ t('drop_sub') }}
+                            </p>
+                            <p class="text-[11px] text-zinc-500 font-mono mt-2.5">
+                                {{ t('max_size_hint') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Uploading State -->
+                    <div id="dropzoneLoading" class="hidden space-y-4 py-4 max-w-md mx-auto">
+                        <div class="flex items-center justify-center gap-2.5">
+                            <div class="w-4 h-4 rounded-full border-2 border-surface-border border-t-brand-500 animate-spin flex-shrink-0"></div>
+                            <p id="uploadingFileName" class="text-xs sm:text-sm font-mono text-zinc-200 truncate max-w-xs">{{ t('uploading') }}</p>
+                        </div>
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-surface-base rounded-full h-3.5 p-0.5 overflow-hidden border border-surface-border relative">
+                            <div id="uploadProgressBar" class="bg-gradient-to-r from-brand-600 via-red-500 to-amber-500 h-full rounded-full transition-all duration-150" style="width: 0%"></div>
+                        </div>
+                        <!-- Stats Row: Percentage, Size, Speed -->
+                        <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400 px-1">
+                            <span id="uploadProgressText" class="text-brand-500 font-bold">0%</span>
+                            <span id="uploadProgressSize" class="text-zinc-400">0 B / 0 B</span>
+                            <span id="uploadProgressSpeed" class="text-emerald-400 font-medium">0 KB/s</span>
+                        </div>
+                    </div>
                 </div>
-                <!-- Progress Bar -->
-                <div class="w-full bg-surface-base rounded-full h-3 p-0.5 overflow-hidden border border-surface-border relative">
-                    <div id="uploadProgressBar" class="bg-gradient-to-r from-brand-600 to-red-500 h-full rounded-full transition-all duration-150" style="width: 0%"></div>
+
+                <!-- Supported File Types & Security Badges -->
+                <div class="flex flex-wrap items-center justify-between gap-2 mt-3 px-2 text-[11px] font-mono text-zinc-500">
+                    <div class="flex items-center gap-1.5">
+                        <span class="px-1.5 py-0.5 rounded bg-surface-subtle border border-surface-border">PNG</span>
+                        <span class="px-1.5 py-0.5 rounded bg-surface-subtle border border-surface-border">JPG</span>
+                        <span class="px-1.5 py-0.5 rounded bg-surface-subtle border border-surface-border">WEBP</span>
+                        <span class="px-1.5 py-0.5 rounded bg-surface-subtle border border-surface-border">MP4</span>
+                        <span class="px-1.5 py-0.5 rounded bg-surface-subtle border border-surface-border">ZIP</span>
+                        <span class="px-1.5 py-0.5 rounded bg-surface-subtle border border-surface-border">PDF</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-zinc-400">
+                        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>TLS 1.3 Encrypted • NVMe Cache</span>
+                    </div>
                 </div>
-                <!-- Stats Row: Percentage, Size, Speed -->
-                <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400 px-1">
-                    <span id="uploadProgressText" class="text-brand-500 font-bold">0%</span>
-                    <span id="uploadProgressSize" class="text-zinc-400">0 B / 0 B</span>
-                    <span id="uploadProgressSpeed" class="text-emerald-400 font-medium">0 KB/s</span>
+
+                <!-- Result Box with 2 Output Links: Direct Hosting Link & Gallery Viewer Link -->
+                <div id="resultContainer" class="mt-5 hidden" data-aos="zoom-in" data-aos-duration="500">
+                    <div class="surface-card bg-surface-panel border border-brand-900/50 p-5 space-y-4 shadow-2xl">
+                        <div class="flex items-center justify-between pb-2 border-b border-surface-border">
+                            <span class="text-xs font-mono font-medium text-emerald-400 flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                {{ t('upload_success') }}
+                            </span>
+                            <span id="fileSizeBadge" class="text-[11px] font-mono text-zinc-400 bg-surface-subtle px-2.5 py-0.5 rounded border border-surface-border"></span>
+                        </div>
+
+                        <!-- 1. Direct Media Link (For raw hosting / embed) -->
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between text-[11px] font-mono">
+                                <span class="text-zinc-400 font-medium">{{ t('direct_link_label') }}</span>
+                                <span class="text-brand-500 font-bold tracking-wider">HOTLINK</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="directUrl" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-600 select-all">
+                                <button id="copyDirectBtn" onclick="copyDirectUrl()" class="btn-primary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"></path>
+                                    </svg>
+                                    <span id="copyDirectBtnText">{{ t('btn_copy') }}</span>
+                                </button>
+                                <a id="openDirectBtn" href="#" target="_blank" class="btn-secondary px-3 py-2 rounded-lg text-xs font-mono flex items-center gap-1">
+                                    <span>{{ t('open_file') }}</span>
+                                    <svg class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- 2. Gallery Viewer Link (For web page preview) -->
+                        <div class="space-y-1.5 pt-2">
+                            <div class="flex items-center justify-between text-[11px] font-mono">
+                                <span class="text-zinc-400 font-medium">{{ t('gallery_link_label') }}</span>
+                                <span class="text-emerald-400 font-bold tracking-wider">GALLERY</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="galleryUrl" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-emerald-600 select-all">
+                                <button id="copyGalleryBtn" onclick="copyGalleryUrl()" class="btn-secondary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"></path>
+                                    </svg>
+                                    <span id="copyGalleryBtnText">{{ t('btn_copy') }}</span>
+                                </button>
+                                <a id="openGalleryBtn" href="#" target="_blank" class="btn-secondary px-3 py-2 rounded-lg text-xs font-mono flex items-center gap-1">
+                                    <span>{{ t('btn_gallery') }}</span>
+                                    <svg class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Result Box with 2 Output Links: Direct Hosting Link & Gallery Viewer Link -->
-        <div id="resultContainer" class="mt-5 hidden" data-aos="zoom-in" data-aos-duration="500">
-            <div class="surface-card bg-surface-panel border border-surface-border p-5 space-y-4 shadow-xl">
-                <div class="flex items-center justify-between pb-2 border-b border-surface-border">
-                    <span class="text-xs font-mono font-medium text-emerald-400 flex items-center gap-1.5">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <!-- ================================================================= -->
+        <!-- 2. APPLICATION MILESTONES & ACHIEVEMENTS                          -->
+        <!-- ================================================================= -->
+        <section class="max-w-5xl mx-auto" data-aos="fade-up" data-aos-duration="600">
+            <div class="text-center mb-8">
+                <div class="text-[11px] font-mono text-brand-500 font-semibold uppercase tracking-widest">{{ t('stats_badge') }}</div>
+                <h2 class="font-heading font-bold text-2xl sm:text-3xl text-white mt-1">{{ t('stats_title') }}</h2>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto mt-2">{{ t('stats_sub') }}</p>
+            </div>
+
+            <!-- 5-Metric Highlights Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+                <!-- 1. Max File Size -->
+                <div class="surface-card p-4 sm:p-5 text-center hover:-translate-y-1 transition duration-200 group border-surface-border hover:border-brand-600/50">
+                    <div class="w-8 h-8 mx-auto rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-brand-500 mb-2.5 group-hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path></svg>
+                    </div>
+                    <div class="font-heading text-xl sm:text-2xl font-bold text-white tracking-tight">{{ t('stat_maxsize_val') }}</div>
+                    <div class="text-xs font-medium text-zinc-300 mt-1">{{ t('stat_maxsize_lbl') }}</div>
+                    <div class="text-[10px] text-zinc-500 font-mono mt-1">{{ t('stat_maxsize_sub') }}</div>
+                </div>
+
+                <!-- 2. SLA Uptime -->
+                <div class="surface-card p-4 sm:p-5 text-center hover:-translate-y-1 transition duration-200 group border-surface-border hover:border-emerald-600/50">
+                    <div class="w-8 h-8 mx-auto rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-emerald-400 mb-2.5 group-hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"></path></svg>
+                    </div>
+                    <div class="font-heading text-xl sm:text-2xl font-bold text-emerald-400 tracking-tight">{{ t('stat_uptime_val') }}</div>
+                    <div class="text-xs font-medium text-zinc-300 mt-1">{{ t('stat_uptime_lbl') }}</div>
+                    <div class="text-[10px] text-zinc-500 font-mono mt-1">{{ t('stat_uptime_sub') }}</div>
+                </div>
+
+                <!-- 3. Edge Latency -->
+                <div class="surface-card p-4 sm:p-5 text-center hover:-translate-y-1 transition duration-200 group border-surface-border hover:border-amber-600/50">
+                    <div class="w-8 h-8 mx-auto rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-amber-400 mb-2.5 group-hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div class="font-heading text-xl sm:text-2xl font-bold text-white tracking-tight">{{ t('stat_speed_val') }}</div>
+                    <div class="text-xs font-medium text-zinc-300 mt-1">{{ t('stat_speed_lbl') }}</div>
+                    <div class="text-[10px] text-zinc-500 font-mono mt-1">{{ t('stat_speed_sub') }}</div>
+                </div>
+
+                <!-- 4. Permanent Retention -->
+                <div class="surface-card p-4 sm:p-5 text-center hover:-translate-y-1 transition duration-200 group border-surface-border hover:border-purple-600/50">
+                    <div class="w-8 h-8 mx-auto rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-purple-400 mb-2.5 group-hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-7.5-6L12 3l8.25 5.75v5.5a11.25 11.25 0 01-8.25 10.75A11.25 11.25 0 013.75 14.25v-5.5L12 3.75z"></path></svg>
+                    </div>
+                    <div class="font-heading text-xl sm:text-2xl font-bold text-white tracking-tight">{{ t('stat_retention_val') }}</div>
+                    <div class="text-xs font-medium text-zinc-300 mt-1">{{ t('stat_retention_lbl') }}</div>
+                    <div class="text-[10px] text-zinc-500 font-mono mt-1">{{ t('stat_retention_sub') }}</div>
+                </div>
+
+                <!-- 5. Total Files Hosted (Real-time Database Counter) -->
+                <div class="surface-card p-4 sm:p-5 text-center hover:-translate-y-1 transition duration-200 group border-surface-border hover:border-brand-600/50 col-span-2 sm:col-span-1">
+                    <div class="w-8 h-8 mx-auto rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-brand-500 mb-2.5 group-hover:scale-110 transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 5.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"></path></svg>
+                    </div>
+                    <div class="font-heading text-xl sm:text-2xl font-bold text-white tracking-tight">
+                        {% if platform_stats and platform_stats.total_files > 0 %}
+                            {{ "{:,}".format(platform_stats.total_files) }}
+                        {% else %}
+                            1,250+
+                        {% endif %}
+                    </div>
+                    <div class="text-xs font-medium text-zinc-300 mt-1">{{ t('stat_files_lbl') }}</div>
+                    <div class="text-[10px] text-zinc-500 font-mono mt-1">
+                        {% if platform_stats and platform_stats.formatted_size %}
+                            {{ platform_stats.formatted_size }} tersimpan
+                        {% else %}
+                            {{ t('stat_files_sub') }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 3. CORE ADVANTAGES & KEY FEATURES (6 PILLARS)                     -->
+        <!-- ================================================================= -->
+        <section class="max-w-5xl mx-auto" data-aos="fade-up" data-aos-duration="600">
+            <div class="text-center mb-12">
+                <div class="text-[11px] font-mono text-brand-500 font-semibold uppercase tracking-widest">{{ t('adv_section_badge') }}</div>
+                <h2 class="font-heading font-bold text-2xl sm:text-3xl text-white mt-1">{{ t('adv_section_title') }}</h2>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-2xl mx-auto mt-2 leading-relaxed">{{ t('adv_section_sub') }}</p>
+            </div>
+
+            <!-- 6 Feature Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <!-- Advantage 1: Distributed Cloud -->
+                <div class="surface-card p-6 hover:-translate-y-1 transition duration-200 relative group overflow-hidden bg-surface-panel/90">
+                    <div class="w-10 h-10 rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-brand-500 mb-4 group-hover:border-brand-600/50 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"></path>
                         </svg>
-                        {{ t('upload_success') }}
-                    </span>
-                    <span id="fileSizeBadge" class="text-[11px] font-mono text-zinc-400 bg-surface-subtle px-2.5 py-0.5 rounded border border-surface-border"></span>
+                    </div>
+                    <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-medium">{{ t('adv_1_badge') }}</div>
+                    <h3 class="font-heading font-semibold text-base sm:text-lg text-white mt-1 group-hover:text-brand-400 transition">{{ t('adv_1_title') }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2.5 leading-relaxed">{{ t('adv_1_desc') }}</p>
                 </div>
 
-                <!-- 1. Direct Media Link (For raw hosting / embed) -->
-                <div class="space-y-1.5">
-                    <div class="flex items-center justify-between text-[11px] font-mono">
-                        <span class="text-zinc-400 font-medium">{{ t('direct_link_label') }}</span>
-                        <span class="text-brand-500 font-bold">HOTLINK</span>
+                <!-- Advantage 2: Video Range Seek HTTP 206 -->
+                <div class="surface-card p-6 hover:-translate-y-1 transition duration-200 relative group overflow-hidden bg-surface-panel/90">
+                    <div class="w-10 h-10 rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-amber-500 mb-4 group-hover:border-amber-600/50 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"></path>
+                        </svg>
                     </div>
+                    <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-medium">{{ t('adv_2_badge') }}</div>
+                    <h3 class="font-heading font-semibold text-base sm:text-lg text-white mt-1 group-hover:text-amber-400 transition">{{ t('adv_2_title') }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2.5 leading-relaxed">{{ t('adv_2_desc') }}</p>
+                </div>
+
+                <!-- Advantage 3: Dual Output Links -->
+                <div class="surface-card p-6 hover:-translate-y-1 transition duration-200 relative group overflow-hidden bg-surface-panel/90">
+                    <div class="w-10 h-10 rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-emerald-500 mb-4 group-hover:border-emerald-600/50 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"></path>
+                        </svg>
+                    </div>
+                    <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-medium">{{ t('adv_3_badge') }}</div>
+                    <h3 class="font-heading font-semibold text-base sm:text-lg text-white mt-1 group-hover:text-emerald-400 transition">{{ t('adv_3_title') }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2.5 leading-relaxed">{{ t('adv_3_desc') }}</p>
+                </div>
+
+                <!-- Advantage 4: Developer REST API -->
+                <div class="surface-card p-6 hover:-translate-y-1 transition duration-200 relative group overflow-hidden bg-surface-panel/90">
+                    <div class="w-10 h-10 rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-blue-500 mb-4 group-hover:border-blue-600/50 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"></path>
+                        </svg>
+                    </div>
+                    <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-medium">{{ t('adv_4_badge') }}</div>
+                    <h3 class="font-heading font-semibold text-base sm:text-lg text-white mt-1 group-hover:text-blue-400 transition">{{ t('adv_4_title') }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2.5 leading-relaxed">{{ t('adv_4_desc') }}</p>
+                </div>
+
+                <!-- Advantage 5: Zero Ads & Clean Links -->
+                <div class="surface-card p-6 hover:-translate-y-1 transition duration-200 relative group overflow-hidden bg-surface-panel/90">
+                    <div class="w-10 h-10 rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-rose-500 mb-4 group-hover:border-rose-600/50 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                        </svg>
+                    </div>
+                    <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-medium">{{ t('adv_5_badge') }}</div>
+                    <h3 class="font-heading font-semibold text-base sm:text-lg text-white mt-1 group-hover:text-rose-400 transition">{{ t('adv_5_title') }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2.5 leading-relaxed">{{ t('adv_5_desc') }}</p>
+                </div>
+
+                <!-- Advantage 6: Enterprise Security -->
+                <div class="surface-card p-6 hover:-translate-y-1 transition duration-200 relative group overflow-hidden bg-surface-panel/90">
+                    <div class="w-10 h-10 rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-teal-500 mb-4 group-hover:border-teal-600/50 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path>
+                        </svg>
+                    </div>
+                    <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider font-medium">{{ t('adv_6_badge') }}</div>
+                    <h3 class="font-heading font-semibold text-base sm:text-lg text-white mt-1 group-hover:text-teal-400 transition">{{ t('adv_6_title') }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2.5 leading-relaxed">{{ t('adv_6_desc') }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 4. COMPARISON MATRIX (XeonStorage vs. File Locker Biasa)          -->
+        <!-- ================================================================= -->
+        <section class="max-w-4xl mx-auto" data-aos="fade-up" data-aos-duration="600">
+            <div class="text-center mb-10">
+                <div class="text-[11px] font-mono text-brand-500 font-semibold uppercase tracking-widest">{{ t('comp_badge') }}</div>
+                <h2 class="font-heading font-bold text-2xl sm:text-3xl text-white mt-1">{{ t('comp_title') }}</h2>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto mt-2">{{ t('comp_sub') }}</p>
+            </div>
+
+            <!-- Comparison Table Container -->
+            <div class="surface-card overflow-hidden border border-surface-border bg-surface-panel/80 shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead>
+                            <tr class="border-b border-surface-border bg-surface-subtle/70 font-mono text-[11px] uppercase tracking-wider">
+                                <th class="py-3.5 px-4 sm:px-6 text-zinc-400">{{ t('comp_th_feature') }}</th>
+                                <th class="py-3.5 px-4 sm:px-6 text-zinc-500">{{ t('comp_th_other') }}</th>
+                                <th class="py-3.5 px-4 sm:px-6 text-brand-500 font-bold bg-brand-950/20">{{ t('comp_th_xeon') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-surface-border/50">
+                            <!-- Row 1: Retention -->
+                            <tr class="hover:bg-surface-subtle/30 transition">
+                                <td class="py-3.5 px-4 sm:px-6 font-medium text-white">{{ t('comp_row_1_title') }}</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-red-400/80 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <span>{{ t('comp_row_1_other') }}</span>
+                                </td>
+                                <td class="py-3.5 px-4 sm:px-6 text-emerald-400 font-semibold bg-brand-950/10">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5"></path></svg>
+                                        {{ t('comp_row_1_xeon') }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <!-- Row 2: Ads -->
+                            <tr class="hover:bg-surface-subtle/30 transition">
+                                <td class="py-3.5 px-4 sm:px-6 font-medium text-white">{{ t('comp_row_2_title') }}</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-red-400/80 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <span>{{ t('comp_row_2_other') }}</span>
+                                </td>
+                                <td class="py-3.5 px-4 sm:px-6 text-emerald-400 font-semibold bg-brand-950/10">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5"></path></svg>
+                                        {{ t('comp_row_2_xeon') }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <!-- Row 3: Hotlink -->
+                            <tr class="hover:bg-surface-subtle/30 transition">
+                                <td class="py-3.5 px-4 sm:px-6 font-medium text-white">{{ t('comp_row_3_title') }}</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-red-400/80 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <span>{{ t('comp_row_3_other') }}</span>
+                                </td>
+                                <td class="py-3.5 px-4 sm:px-6 text-emerald-400 font-semibold bg-brand-950/10">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5"></path></svg>
+                                        {{ t('comp_row_3_xeon') }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <!-- Row 4: Video Scrubbing -->
+                            <tr class="hover:bg-surface-subtle/30 transition">
+                                <td class="py-3.5 px-4 sm:px-6 font-medium text-white">{{ t('comp_row_4_title') }}</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-red-400/80 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <span>{{ t('comp_row_4_other') }}</span>
+                                </td>
+                                <td class="py-3.5 px-4 sm:px-6 text-emerald-400 font-semibold bg-brand-950/10">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5"></path></svg>
+                                        {{ t('comp_row_4_xeon') }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <!-- Row 5: REST API -->
+                            <tr class="hover:bg-surface-subtle/30 transition">
+                                <td class="py-3.5 px-4 sm:px-6 font-medium text-white">{{ t('comp_row_5_title') }}</td>
+                                <td class="py-3.5 px-4 sm:px-6 text-red-400/80 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <span>{{ t('comp_row_5_other') }}</span>
+                                </td>
+                                <td class="py-3.5 px-4 sm:px-6 text-emerald-400 font-semibold bg-brand-950/10">
+                                    <span class="inline-flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.5 12.75l6 6 9-13.5"></path></svg>
+                                        {{ t('comp_row_5_xeon') }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 5. HOW IT WORKS (3 SIMPLE STEPS)                                  -->
+        <!-- ================================================================= -->
+        <section class="max-w-5xl mx-auto" data-aos="fade-up" data-aos-duration="600">
+            <div class="text-center mb-12">
+                <div class="text-[11px] font-mono text-brand-500 font-semibold uppercase tracking-widest">{{ t('how_badge') }}</div>
+                <h2 class="font-heading font-bold text-2xl sm:text-3xl text-white mt-1">{{ t('how_title') }}</h2>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto mt-2">{{ t('how_sub') }}</p>
+            </div>
+
+            <!-- Steps Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+                <!-- Step 1 -->
+                <div class="surface-card p-6 relative group border-surface-border hover:border-brand-600/40 transition duration-200">
+                    <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-500 font-mono font-bold text-sm mb-4">
+                        01
+                    </div>
+                    <h3 class="font-heading font-semibold text-lg text-white">{{ t('how_step_1_title') }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2 leading-relaxed">{{ t('how_step_1_desc') }}</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="surface-card p-6 relative group border-surface-border hover:border-brand-600/40 transition duration-200">
+                    <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-500 font-mono font-bold text-sm mb-4">
+                        02
+                    </div>
+                    <h3 class="font-heading font-semibold text-lg text-white">{{ t('how_step_2_title') }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2 leading-relaxed">{{ t('how_step_2_desc') }}</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="surface-card p-6 relative group border-surface-border hover:border-brand-600/40 transition duration-200">
+                    <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-center text-brand-500 font-mono font-bold text-sm mb-4">
+                        03
+                    </div>
+                    <h3 class="font-heading font-semibold text-lg text-white">{{ t('how_step_3_title') }}</h3>
+                    <p class="text-xs sm:text-sm text-zinc-400 mt-2 leading-relaxed">{{ t('how_step_3_desc') }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 6. DEVELOPER API QUICKSTART (CODE SNIPPET TABS)                   -->
+        <!-- ================================================================= -->
+        <section class="max-w-4xl mx-auto" data-aos="fade-up" data-aos-duration="600">
+            <div class="text-center mb-8">
+                <div class="text-[11px] font-mono text-brand-500 font-semibold uppercase tracking-widest">{{ t('api_section_badge') }}</div>
+                <h2 class="font-heading font-bold text-2xl sm:text-3xl text-white mt-1">{{ t('api_section_title') }}</h2>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto mt-2">{{ t('api_section_sub') }}</p>
+            </div>
+
+            <!-- Terminal Mockup Window -->
+            <div class="surface-card border border-surface-border bg-surface-base shadow-2xl rounded-2xl overflow-hidden">
+                <!-- Terminal Header Bar -->
+                <div class="flex items-center justify-between px-4 py-3 border-b border-surface-border bg-surface-panel">
                     <div class="flex items-center gap-2">
-                        <input type="text" id="directUrl" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-600 select-all">
-                        <button id="copyDirectBtn" onclick="copyDirectUrl()" class="btn-primary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"></path>
-                            </svg>
-                            <span id="copyDirectBtnText">{{ t('btn_copy') }}</span>
+                        <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+                        <span class="text-xs font-mono text-zinc-500 ml-2">POST /api/upload</span>
+                    </div>
+                    <!-- Language Tabs -->
+                    <div class="flex items-center gap-1 bg-surface-subtle p-1 rounded-lg text-xs font-mono">
+                        <button onclick="switchCodeTab('curl')" id="tab-curl" class="px-2.5 py-1 rounded bg-surface-panel text-white font-medium shadow-sm transition">cURL</button>
+                        <button onclick="switchCodeTab('python')" id="tab-python" class="px-2.5 py-1 rounded text-zinc-400 hover:text-white transition">Python</button>
+                        <button onclick="switchCodeTab('js')" id="tab-js" class="px-2.5 py-1 rounded text-zinc-400 hover:text-white transition">JavaScript</button>
+                    </div>
+                </div>
+
+                <!-- Code Container -->
+                <div class="p-5 font-mono text-xs sm:text-sm text-zinc-300 relative overflow-x-auto">
+                    <!-- cURL Snippet -->
+                    <pre id="code-curl" class="block leading-relaxed"><span class="text-brand-500">curl</span> -X POST <span class="text-amber-400">"{{ request.base_url }}api/upload"</span> \
+  -H <span class="text-emerald-400">"Authorization: Bearer xst_YOUR_API_KEY"</span> \
+  -F <span class="text-purple-400">"file=@example.jpg"</span></pre>
+
+                    <!-- Python Snippet -->
+                    <pre id="code-python" class="hidden leading-relaxed"><span class="text-brand-500">import</span> requests
+
+url = <span class="text-amber-400">"{{ request.base_url }}api/upload"</span>
+headers = {<span class="text-emerald-400">"Authorization"</span>: <span class="text-amber-400">"Bearer xst_YOUR_API_KEY"</span>}
+files = {<span class="text-purple-400">"file"</span>: open(<span class="text-amber-400">"example.jpg"</span>, <span class="text-amber-400">"rb"</span>)}
+
+response = requests.post(url, headers=headers, files=files)
+print(response.json())</pre>
+
+                    <!-- JavaScript Snippet -->
+                    <pre id="code-js" class="hidden leading-relaxed"><span class="text-brand-500">const</span> formData = <span class="text-brand-500">new</span> FormData();
+formData.append(<span class="text-purple-400">"file"</span>, fileInput.files[0]);
+
+<span class="text-brand-500">const</span> res = <span class="text-brand-500">await</span> fetch(<span class="text-amber-400">"{{ request.base_url }}api/upload"</span>, {
+  method: <span class="text-amber-400">"POST"</span>,
+  headers: { <span class="text-emerald-400">"Authorization"</span>: <span class="text-amber-400">"Bearer xst_YOUR_API_KEY"</span> },
+  body: formData
+});
+<span class="text-brand-500">const</span> data = <span class="text-brand-500">await</span> res.json();
+console.log(data);</pre>
+
+                    <!-- Copy Button -->
+                    <div class="mt-4 pt-3 border-t border-surface-border flex items-center justify-between text-xs">
+                        <button onclick="copyCurrentCode()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle hover:bg-surface-border text-zinc-300 font-mono transition">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                            <span id="copyCodeBtnText">{{ t('api_copy_code') }}</span>
                         </button>
-                        <a id="openDirectBtn" href="#" target="_blank" class="btn-secondary px-3 py-2 rounded-lg text-xs font-mono flex items-center gap-1">
-                            <span>{{ t('open_file') }}</span>
-                            <svg class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
-                            </svg>
+                        <a href="/docs-page" class="text-brand-500 hover:text-brand-400 font-medium font-sans flex items-center gap-1">
+                            <span>{{ t('api_docs_btn') }} &rarr;</span>
                         </a>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- 2. Gallery Viewer Link (For web page preview) -->
-                <div class="space-y-1.5 pt-2">
-                    <div class="flex items-center justify-between text-[11px] font-mono">
-                        <span class="text-zinc-400 font-medium">{{ t('gallery_link_label') }}</span>
-                        <span class="text-emerald-400 font-bold">GALLERY</span>
+        <!-- ================================================================= -->
+        <!-- 7. FREQUENTLY ASKED QUESTIONS (ACCORDION)                         -->
+        <!-- ================================================================= -->
+        <section class="max-w-3xl mx-auto" data-aos="fade-up" data-aos-duration="600">
+            <div class="text-center mb-10">
+                <div class="text-[11px] font-mono text-brand-500 font-semibold uppercase tracking-widest">{{ t('faq_badge') }}</div>
+                <h2 class="font-heading font-bold text-2xl sm:text-3xl text-white mt-1">{{ t('faq_title') }}</h2>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto mt-2">{{ t('faq_sub') }}</p>
+            </div>
+
+            <div class="space-y-3">
+                <!-- FAQ 1 -->
+                <div class="surface-card border border-surface-border rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(1)" class="w-full py-4 px-5 text-left flex items-center justify-between gap-4 font-heading font-semibold text-sm sm:text-base text-white hover:text-brand-400 transition">
+                        <span>{{ t('faq_q1') }}</span>
+                        <svg id="faq-icon-1" class="w-4 h-4 text-zinc-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="faq-answer-1" class="hidden px-5 pb-4 text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed border-t border-surface-border/40 pt-3">
+                        {{ t('faq_a1') }}
                     </div>
-                    <div class="flex items-center gap-2">
-                        <input type="text" id="galleryUrl" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-emerald-600 select-all">
-                        <button id="copyGalleryBtn" onclick="copyGalleryUrl()" class="btn-secondary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 whitespace-nowrap">
-                            <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"></path>
-                            </svg>
-                            <span id="copyGalleryBtnText">{{ t('btn_copy') }}</span>
-                        </button>
-                        <a id="openGalleryBtn" href="#" target="_blank" class="btn-secondary px-3 py-2 rounded-lg text-xs font-mono flex items-center gap-1">
-                            <span>{{ t('btn_gallery') }}</span>
-                            <svg class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
-                            </svg>
-                        </a>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="surface-card border border-surface-border rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(2)" class="w-full py-4 px-5 text-left flex items-center justify-between gap-4 font-heading font-semibold text-sm sm:text-base text-white hover:text-brand-400 transition">
+                        <span>{{ t('faq_q2') }}</span>
+                        <svg id="faq-icon-2" class="w-4 h-4 text-zinc-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="faq-answer-2" class="hidden px-5 pb-4 text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed border-t border-surface-border/40 pt-3">
+                        {{ t('faq_a2') }}
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="surface-card border border-surface-border rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(3)" class="w-full py-4 px-5 text-left flex items-center justify-between gap-4 font-heading font-semibold text-sm sm:text-base text-white hover:text-brand-400 transition">
+                        <span>{{ t('faq_q3') }}</span>
+                        <svg id="faq-icon-3" class="w-4 h-4 text-zinc-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="faq-answer-3" class="hidden px-5 pb-4 text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed border-t border-surface-border/40 pt-3">
+                        {{ t('faq_a3') }}
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="surface-card border border-surface-border rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(4)" class="w-full py-4 px-5 text-left flex items-center justify-between gap-4 font-heading font-semibold text-sm sm:text-base text-white hover:text-brand-400 transition">
+                        <span>{{ t('faq_q4') }}</span>
+                        <svg id="faq-icon-4" class="w-4 h-4 text-zinc-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="faq-answer-4" class="hidden px-5 pb-4 text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed border-t border-surface-border/40 pt-3">
+                        {{ t('faq_a4') }}
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="surface-card border border-surface-border rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(5)" class="w-full py-4 px-5 text-left flex items-center justify-between gap-4 font-heading font-semibold text-sm sm:text-base text-white hover:text-brand-400 transition">
+                        <span>{{ t('faq_q5') }}</span>
+                        <svg id="faq-icon-5" class="w-4 h-4 text-zinc-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="faq-answer-4" class="hidden px-5 pb-4 text-xs sm:text-sm text-zinc-400 font-sans leading-relaxed border-t border-surface-border/40 pt-3">
+                        {{ t('faq_a5') }}
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Feature Pillars with Staggered AOS Animations -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-16 max-w-4xl mx-auto">
-        <div class="surface-card p-5 hover:-translate-y-1 transition duration-200" data-aos="fade-up" data-aos-delay="200">
-            <div class="w-9 h-9 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-300 mb-3">
-                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"></path>
-                </svg>
+        <!-- ================================================================= -->
+        <!-- 8. BOTTOM CALL-TO-ACTION (CTA) BANNER                             -->
+        <!-- ================================================================= -->
+        <section class="max-w-4xl mx-auto" data-aos="zoom-in" data-aos-duration="600">
+            <div class="surface-card p-8 sm:p-12 text-center rounded-3xl relative overflow-hidden border border-brand-900/60 bg-gradient-to-b from-surface-panel to-surface-base shadow-2xl">
+                <div class="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-40 bg-brand-600/20 blur-3xl rounded-full"></div>
+                <div class="text-[11px] font-mono text-brand-500 font-semibold uppercase tracking-widest mb-2">{{ t('cta_badge') }}</div>
+                <h2 class="font-heading font-bold text-2xl sm:text-4xl text-white max-w-xl mx-auto leading-tight">
+                    {{ t('cta_title') }}
+                </h2>
+                <p class="text-xs sm:text-sm text-zinc-400 max-w-lg mx-auto mt-3 leading-relaxed">
+                    {{ t('cta_desc') }}
+                </p>
+                <div class="flex flex-wrap items-center justify-center gap-3 mt-7">
+                    {% if not user_id %}
+                    <button onclick="openAuthModal('register')" class="btn-primary px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-brand-950/50 hover:shadow-brand-600/30 transition">
+                        {{ t('cta_btn_register') }}
+                    </button>
+                    {% else %}
+                    <a href="/dashboard" class="btn-primary px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-brand-950/50 hover:shadow-brand-600/30 transition">
+                        {{ t('nav_dashboard') }} &rarr;
+                    </a>
+                    {% endif %}
+                    <button onclick="scrollToUploadArea()" class="btn-secondary px-6 py-2.5 rounded-xl text-sm font-medium transition">
+                        {{ t('cta_btn_upload') }} &uarr;
+                    </button>
+                </div>
             </div>
-            <div class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">{{ t('feat_1_badge') }}</div>
-            <h3 class="font-heading font-semibold text-base text-white mt-1">{{ t('feat_1_title') }}</h3>
-            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">{{ t('feat_1_desc') }}</p>
-        </div>
+        </section>
 
-        <div class="surface-card p-5 hover:-translate-y-1 transition duration-200" data-aos="fade-up" data-aos-delay="300">
-            <div class="w-9 h-9 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-300 mb-3">
-                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"></path>
-                </svg>
-            </div>
-            <div class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">{{ t('feat_2_badge') }}</div>
-            <h3 class="font-heading font-semibold text-base text-white mt-1">{{ t('feat_2_title') }}</h3>
-            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">{{ t('feat_2_desc') }}</p>
-        </div>
-
-        <div class="surface-card p-5 hover:-translate-y-1 transition duration-200" data-aos="fade-up" data-aos-delay="400">
-            <div class="w-9 h-9 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-300 mb-3">
-                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"></path>
-                </svg>
-            </div>
-            <div class="text-[11px] font-mono text-zinc-500 uppercase tracking-wider">{{ t('feat_3_badge') }}</div>
-            <h3 class="font-heading font-semibold text-base text-white mt-1">{{ t('feat_3_title') }}</h3>
-            <p class="text-xs text-zinc-400 mt-2 leading-relaxed">{{ t('feat_3_desc') }}</p>
-        </div>
-    </div>
-</main>
+    </main>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
     window.isUserLoggedIn = {{ 'true' if user_id else 'false' }};
+
+    // Scroll to Upload Area smoothly
+    function scrollToUploadArea() {
+        const uploader = document.getElementById('uploadBoxArea');
+        if (uploader) {
+            uploader.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    // Code Tab Switcher
+    let activeTab = 'curl';
+    function switchCodeTab(tab) {
+        activeTab = tab;
+        ['curl', 'python', 'js'].forEach(t => {
+            const pre = document.getElementById('code-' + t);
+            const btn = document.getElementById('tab-' + t);
+            if (t === tab) {
+                if (pre) pre.classList.remove('hidden');
+                if (btn) {
+                    btn.classList.add('bg-surface-panel', 'text-white');
+                    btn.classList.remove('text-zinc-400');
+                }
+            } else {
+                if (pre) pre.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('bg-surface-panel', 'text-white');
+                    btn.classList.add('text-zinc-400');
+                }
+            }
+        });
+    }
+
+    // Copy Code Snippet
+    function copyCurrentCode() {
+        const pre = document.getElementById('code-' + activeTab);
+        if (!pre) return;
+        const text = pre.innerText || pre.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const btnText = document.getElementById('copyCodeBtnText');
+            if (btnText) {
+                const original = btnText.textContent;
+                btnText.textContent = (window.i18nTexts && window.i18nTexts.copied) || "Tersalin!";
+                setTimeout(() => { btnText.textContent = original; }, 2000);
+            }
+        });
+    }
+
+    // FAQ Accordion Toggle
+    function toggleFaq(index) {
+        const answer = document.getElementById('faq-answer-' + index);
+        const icon = document.getElementById('faq-icon-' + index);
+        if (!answer) return;
+
+        if (answer.classList.contains('hidden')) {
+            answer.classList.remove('hidden');
+            if (icon) icon.classList.add('rotate-180');
+        } else {
+            answer.classList.add('hidden');
+            if (icon) icon.classList.remove('rotate-180');
+        }
+    }
 </script>
 <script src="/static/js/uploader.js?v=2.1.0"></script>
 {% endblock %}

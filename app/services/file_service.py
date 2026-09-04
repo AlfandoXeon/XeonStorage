@@ -18,9 +18,34 @@ class FileService:
         ext = Path(name).suffix.lower().lstrip(".") or None
         fid = secrets.token_urlsafe(7).replace("-", "a").replace("_", "b")
 
-        # Directly stream uploaded file to storage provider (Zero Cache Disk Overhead)
+        # Directly stream uploaded file to storage provider
         upload.file.seek(0)
         result = self.storage.put(upload.file, name, mime)
+
+        file_size = result.get("size", 0)
+        if not file_size or file_size <= 0:
+            try:
+                upload.file.seek(0, os.SEEK_END)
+                file_size = upload.file.tell()
+                upload.file.seek(0)
+            except Exception:
+                pass
+
+        # Smart Pre-Caching: Cache locally so first access/preview uses 0 Telegram bandwidth
+        if file_size > 0 and file_size <= self.cache_mgr.max_size_bytes:
+            try:
+                self.cache_dir.mkdir(parents=True, exist_ok=True)
+                cached_target = self.cache_dir / f"{fid}.bin"
+                temp_target = self.cache_dir / f"{fid}.tmp"
+                upload.file.seek(0)
+                with open(temp_target, "wb") as f_out:
+                    shutil.copyfileobj(upload.file, f_out, length=512 * 1024)
+                temp_target.replace(cached_target)
+                self.cache_mgr.touch(fid)
+                self.cache_mgr.enforce_size_limit()
+            except Exception:
+                # If pre-caching fails, file is still safely in remote storage
+                pass
 
         record = {
             "id": fid,
@@ -28,7 +53,7 @@ class FileService:
             "original_name": name,
             "extension": ext,
             "mime_type": mime,
-            "size": result.get("size", 0),
+            "size": file_size,
             "storage_provider": self.storage.name,
             "storage_key": result["storage_key"],
             "created_at": datetime.now(timezone.utc).isoformat()
@@ -44,6 +69,10 @@ class FileService:
 
     def stats(self, user_id):
         return self.repo.stats(user_id)
+
+    def global_stats(self):
+        return self.repo.global_stats()
+
 
     def delete(self, file_id, user_id):
         r = self.repo.get(file_id)

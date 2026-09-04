@@ -40,11 +40,29 @@ def change_language(request: Request, lang_code: str):
 
 @router.get("/", response_class=HTMLResponse)
 def home(request: Request):
+    platform_stats = {"total_files": 0, "total_bytes": 0, "formatted_size": "0 MB"}
+    try:
+        raw_stats = get("files").global_stats()
+        if raw_stats:
+            total_f = raw_stats.get("total_files", 0)
+            total_b = raw_stats.get("total_bytes", 0)
+            platform_stats["total_files"] = total_f
+            platform_stats["total_bytes"] = total_b
+            if total_b >= 1024 * 1024 * 1024:
+                platform_stats["formatted_size"] = f"{total_b / (1024 * 1024 * 1024):.2f} GB"
+            else:
+                platform_stats["formatted_size"] = f"{total_b / (1024 * 1024):.2f} MB"
+    except Exception:
+        pass
+
     return get("templates").TemplateResponse(
         request,
         "index.html",
-        get_context(request)
+        get_context(request, {
+            "platform_stats": platform_stats
+        })
     )
+
 
 @router.post("/upload")
 def upload_ajax(request: Request, file: UploadFile = File(...)):

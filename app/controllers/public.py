@@ -75,7 +75,7 @@ def serve_file_with_range(file_path: Path, mime_type: str, original_name: str, r
             f.seek(start)
             bytes_left = chunk_length
             while bytes_left > 0:
-                read_size = min(128 * 1024, bytes_left)
+                read_size = min(512 * 1024, bytes_left)
                 data = f.read(read_size)
                 if not data:
                     break
@@ -126,27 +126,74 @@ def public_file_delivery(file_id: str, ext: str, request: Request):
 
         # Ultra Fast-Path: If already in local NVMe/SSD cache, serve directly with instant HTTP 206 Range seeking
         if cached_file.exists() and cached_file.stat().st_size > 0:
+            try:
+                get("files").cache_mgr.touch(file_id)
+            except Exception:
+                pass
             return serve_file_with_range(cached_file, mime_type, original_name, range_header, etag, is_head)
 
-        # Cache-Miss Real-Time Pass-Through: Stream chunks directly to user while caching to disk simultaneously
+        # Cache-Miss Handling
         try:
-            req_stream = storage.get_file_stream(r["storage_key"])
+            # If user requested a specific sub-range (video scrub seeking), forward Range header to Telegram API
+            has_partial_range = bool(range_header and range_header.startswith("bytes=") and range_header.strip() != "bytes=0-")
+
+            req_stream = storage.get_file_stream(r["storage_key"], range_header=range_header if has_partial_range else None)
             
+            # If Telegram returned 206 Partial Content, pass through requested range directly without caching partial fragments
+            if getattr(req_stream, "status_code", 200) == 206:
+                content_range = req_stream.headers.get("Content-Range", "")
+                content_length = req_stream.headers.get("Content-Length", "")
+                headers = {
+                    "Content-Range": content_range,
+                    "Accept-Ranges": "bytes",
+                    "Content-Type": mime_type,
+                    "ETag": etag,
+                    "Cache-Control": "public, max-age=31536000, immutable",
+                    "Content-Disposition": f'inline; filename="{original_name}"',
+                    "Access-Control-Allow-Origin": "*"
+                }
+                if content_length:
+                    headers["Content-Length"] = content_length
+
+                if is_head:
+                    return Response(status_code=206, media_type=mime_type, headers=headers)
+
+                def iter_remote_chunk():
+                    for chunk in req_stream.iter_content(chunk_size=512 * 1024):
+                        if chunk:
+                            yield chunk
+
+                return StreamingResponse(iter_remote_chunk(), status_code=206, headers=headers, media_type=mime_type)
+
+            # Full Stream Pass-Through: Stream chunks directly to user while caching to disk simultaneously
             def stream_and_cache_live():
                 temp_cache = _cache_dir / f"{file_id}.tmp"
+                cache_success = False
                 try:
                     with open(temp_cache, "wb") as f_out:
-                        for chunk in req_stream.iter_content(chunk_size=256 * 1024):
+                        for chunk in req_stream.iter_content(chunk_size=512 * 1024):
                             if chunk:
                                 f_out.write(chunk)
                                 yield chunk
                     if temp_cache.exists() and temp_cache.stat().st_size > 0:
                         temp_cache.replace(cached_file)
+                        cache_success = True
+                        try:
+                            get("files").cache_mgr.touch(file_id)
+                            get("files").cache_mgr.enforce_size_limit()
+                        except Exception:
+                            pass
                 except Exception:
-                    # If caching fails, ensure stream still reaches the client
-                    for chunk in req_stream.iter_content(chunk_size=256 * 1024):
+                    # If caching fails or client aborts, ensure stream continues or temp cleaned
+                    for chunk in req_stream.iter_content(chunk_size=512 * 1024):
                         if chunk:
                             yield chunk
+                finally:
+                    if not cache_success and temp_cache.exists():
+                        try:
+                            temp_cache.unlink(missing_ok=True)
+                        except Exception:
+                            pass
 
             headers = {
                 "ETag": etag,

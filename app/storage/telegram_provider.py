@@ -231,8 +231,8 @@ class TelegramStorageProvider:
         self._path_cache[file_id] = (file_path, now + 2700)
         return file_path
 
-    def get_file_stream(self, key: str):
-        """Streams file chunks using pooled HTTP session or MTProto"""
+    def get_file_stream(self, key: str, range_header: str = None):
+        """Streams file chunks using pooled HTTP session or MTProto, with optional Range forwarding"""
         if not self.bot_token:
             raise TelegramSystemError("Telegram Bot belum dikonfigurasi")
 
@@ -244,7 +244,10 @@ class TelegramStorageProvider:
             try:
                 file_path = self.resolve_file_path(file_id)
                 download_url = f"{self.api_base}/file/bot{self.bot_token}/{file_path}"
-                res = self.session.get(download_url, stream=True, timeout=60)
+                req_headers = {}
+                if range_header:
+                    req_headers["Range"] = range_header
+                res = self.session.get(download_url, headers=req_headers, stream=True, timeout=120)
                 if res.status_code in [400, 404]:
                     raise TelegramFileUnavailableError("Berkas tidak ditemukan pada server unduhan Telegram.")
                 res.raise_for_status()

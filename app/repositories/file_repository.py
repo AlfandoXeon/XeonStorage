@@ -43,3 +43,11 @@ class FileRepository:
             "UPDATE files SET deleted_at=CURRENT_TIMESTAMP WHERE id=? AND user_id=?",
             (file_id, user_id)
         )
+
+    def global_stats(self):
+        res = self.db.fetchone(
+            """SELECT COUNT(*) AS total_files, COALESCE(SUM(size), 0) AS total_bytes
+               FROM files WHERE deleted_at IS NULL"""
+        )
+        return res or {"total_files": 0, "total_bytes": 0}
+
