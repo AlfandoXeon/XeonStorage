@@ -1,0 +1,431 @@
+{% extends "base.html" %}
+{% block title %}{{ t('history_title') }} • {{ t('brand_name') }}{% endblock %}
+
+{% block meta_robots %}
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+{% endblock %}
+
+{% block content %}
+<main class="max-w-6xl mx-auto px-4 sm:px-5 py-8 md:py-10 space-y-6">
+    <!-- Breadcrumb & Top Header with AOS -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-surface-border" data-aos="fade-down" data-aos-duration="600">
+        <div>
+            <!-- Breadcrumbs -->
+            <div class="flex items-center gap-2 text-xs font-mono text-zinc-500 mb-1.5">
+                <a href="/dashboard" class="hover:text-brand-400 transition flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path>
+                    </svg>
+                    <span>{{ t('nav_dashboard') }}</span>
+                </a>
+                <span>/</span>
+                <span class="text-zinc-300">{{ t('nav_history') }}</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold font-heading text-white flex items-center gap-2.5">
+                <span>{{ t('history_title') }}</span>
+                <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 font-normal">
+                    {{ total_count }} Berkas
+                </span>
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-400 mt-1">{{ t('history_desc') }}</p>
+        </div>
+
+        <!-- Quick Navigation Actions -->
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="/dashboard" class="btn-secondary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 border-surface-border hover:border-zinc-500 transition">
+                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path>
+                </svg>
+                <span>{{ t('history_btn_dashboard') }}</span>
+            </a>
+            <a href="/dashboard" class="btn-primary px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-lg shadow-brand-950/40">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
+                </svg>
+                <span>Unggah Berkas Baru</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Storage Mini Overview Cards with AOS -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="surface-card p-4 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400 flex-shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"></path>
+                </svg>
+            </div>
+            <div>
+                <div class="text-zinc-500 text-[10px] font-mono uppercase tracking-wider">{{ t('dash_stat_files') }}</div>
+                <div class="text-lg font-bold font-heading text-white">{{ stats["files"] }} Berkas</div>
+            </div>
+        </div>
+
+        <div class="surface-card p-4 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.75 5.1a3 3 0 012.4-1.1h7.7a3 3 0 012.4 1.1l2.1 3.45a4.5 4.5 0 01.9 2.7"></path>
+                </svg>
+            </div>
+            <div>
+                <div class="text-zinc-500 text-[10px] font-mono uppercase tracking-wider">{{ t('dash_stat_storage') }}</div>
+                <div class="text-lg font-bold font-heading text-emerald-400">
+                    {{ "%.2f"|format(stats["bytes"]/1024/1024) }} <span class="text-xs font-normal text-zinc-500 font-mono">MB</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="surface-card p-4 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 flex-shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"></path>
+                </svg>
+            </div>
+            <div>
+                <div class="text-zinc-500 text-[10px] font-mono uppercase tracking-wider">Hasil Filter</div>
+                <div class="text-lg font-bold font-heading text-blue-400">{{ total_count }} Berkas Ditemukan</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search & Filter Controls Card -->
+    <section class="surface-card p-4 sm:p-5 space-y-4" data-aos="fade-up" data-aos-delay="150">
+        <form method="get" action="/history" class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+            <!-- Search Input -->
+            <div class="relative flex-1">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>
+                    </svg>
+                </div>
+                <input type="text" name="q" value="{{ q }}" placeholder="{{ t('history_search_placeholder') }}" class="w-full bg-surface-base border border-surface-border rounded-xl pl-10 pr-10 py-2.5 text-xs sm:text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition font-sans">
+                {% if q %}
+                <a href="/history?category={{ category }}" class="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-500 hover:text-zinc-300" title="Clear search">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+
+            <input type="hidden" name="category" value="{{ category }}">
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-secondary px-4 py-2.5 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 border-surface-border hover:border-brand-600 transition">
+                <svg class="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>
+                </svg>
+                <span>Cari</span>
+            </button>
+        </form>
+
+        <!-- Category Filter Pills -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 pt-1 text-xs no-scrollbar">
+            <a href="/history?category=all{% if q %}&q={{ q }}{% endif %}" class="px-3.5 py-1.5 rounded-lg font-medium whitespace-nowrap transition {% if category == 'all' or not category %}bg-brand-600 text-white shadow-md shadow-brand-950/50{% else %}bg-surface-subtle text-zinc-400 hover:text-white border border-surface-border{% endif %}">
+                {{ t('history_filter_all') }}
+            </a>
+            <a href="/history?category=image{% if q %}&q={{ q }}{% endif %}" class="px-3.5 py-1.5 rounded-lg font-medium whitespace-nowrap transition {% if category == 'image' %}bg-brand-600 text-white shadow-md shadow-brand-950/50{% else %}bg-surface-subtle text-zinc-400 hover:text-white border border-surface-border{% endif %}">
+                📷 {{ t('history_filter_image') }}
+            </a>
+            <a href="/history?category=video{% if q %}&q={{ q }}{% endif %}" class="px-3.5 py-1.5 rounded-lg font-medium whitespace-nowrap transition {% if category == 'video' %}bg-brand-600 text-white shadow-md shadow-brand-950/50{% else %}bg-surface-subtle text-zinc-400 hover:text-white border border-surface-border{% endif %}">
+                🎬 {{ t('history_filter_video') }}
+            </a>
+            <a href="/history?category=audio{% if q %}&q={{ q }}{% endif %}" class="px-3.5 py-1.5 rounded-lg font-medium whitespace-nowrap transition {% if category == 'audio' %}bg-brand-600 text-white shadow-md shadow-brand-950/50{% else %}bg-surface-subtle text-zinc-400 hover:text-white border border-surface-border{% endif %}">
+                🎵 {{ t('history_filter_audio') }}
+            </a>
+            <a href="/history?category=doc{% if q %}&q={{ q }}{% endif %}" class="px-3.5 py-1.5 rounded-lg font-medium whitespace-nowrap transition {% if category == 'doc' %}bg-brand-600 text-white shadow-md shadow-brand-950/50{% else %}bg-surface-subtle text-zinc-400 hover:text-white border border-surface-border{% endif %}">
+                📄 {{ t('history_filter_doc') }}
+            </a>
+        </div>
+    </section>
+
+    <!-- File List Table Section -->
+    <section class="surface-card p-4 sm:p-6" data-aos="fade-up" data-aos-delay="200">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 pb-3 border-b border-surface-border">
+            <div class="text-xs font-mono text-zinc-400">
+                {{ t('history_showing_count', count=files|length) }} (Total {{ total_count }})
+            </div>
+            <div class="text-xs font-mono text-zinc-400">
+                {{ t('history_page_info', current=page, total=total_pages) }}
+            </div>
+        </div>
+
+        <div class="overflow-x-auto -mx-4 sm:mx-0">
+            <table class="w-full text-left text-xs min-w-[700px]">
+                <thead class="text-zinc-500 border-b border-surface-border font-mono uppercase tracking-wider text-[11px]">
+                    <tr>
+                        <th class="py-3 px-3">{{ t('th_name') }}</th>
+                        <th class="py-3 px-3">{{ t('th_size') }}</th>
+                        <th class="py-3 px-3">{{ t('th_mime') }}</th>
+                        <th class="py-3 px-3">Tanggal Unggah</th>
+                        <th class="py-3 px-3">{{ t('th_link') }}</th>
+                        <th class="py-3 px-3 text-right">{{ t('th_action') }}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-border font-mono">
+                    {% for f in files %}
+                    {% set ext_str = '.' ~ f['extension'] if f['extension'] else '' %}
+                    {% set direct_path = '/f/' ~ f['id'] ~ ext_str %}
+                    {% set gallery_path = '/v/' ~ f['id'] %}
+                    {% set direct_full_url = request.base_url ~ direct_path[1:] %}
+                    {% set gallery_full_url = request.base_url ~ gallery_path[1:] %}
+                    <tr class="hover:bg-surface-subtle/50 transition">
+                        <td class="py-3 px-3 text-zinc-200 font-sans font-medium max-w-xs truncate" title="{{ f['original_name'] }}">
+                            <div class="flex items-center gap-2.5">
+                                {% if f['mime_type'] and f['mime_type'].startswith('image/') %}
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" title="Image"></span>
+                                {% elif f['mime_type'] and f['mime_type'].startswith('video/') %}
+                                <span class="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0" title="Video"></span>
+                                {% elif f['mime_type'] and f['mime_type'].startswith('audio/') %}
+                                <span class="w-2 h-2 rounded-full bg-purple-400 flex-shrink-0" title="Audio"></span>
+                                {% else %}
+                                <span class="w-2 h-2 rounded-full bg-brand-500 flex-shrink-0" title="Document"></span>
+                                {% endif %}
+                                <span class="truncate">{{ f["original_name"] }}</span>
+                            </div>
+                        </td>
+                        <td class="py-3 px-3 text-zinc-400 whitespace-nowrap">
+                            {{ "%.2f"|format(f["size"]/1024/1024) }} MB
+                        </td>
+                        <td class="py-3 px-3 text-zinc-500 max-w-[130px] truncate" title="{{ f['mime_type'] or '-' }}">
+                            {{ f["mime_type"] or "-" }}
+                        </td>
+                        <td class="py-3 px-3 text-zinc-400 whitespace-nowrap text-[11px]">
+                            {{ f['created_at'][:10] if f['created_at'] else '-' }}
+                        </td>
+                        <td class="py-3 px-3">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <!-- Button Jendela Detail & Properties -->
+                                <button type="button" onclick="showFileModal({
+                                    id: '{{ f['id'] }}',
+                                    name: '{{ f['original_name']|replace('\'', '\\\'') }}',
+                                    size: {{ f['size'] }},
+                                    mime_type: '{{ f['mime_type'] }}',
+                                    created_at: '{{ f['created_at'] }}',
+                                    direct_url: '{{ direct_full_url }}',
+                                    gallery_url: '{{ gallery_full_url }}'
+                                })" class="px-2.5 py-1 rounded bg-surface-subtle hover:bg-surface-border text-zinc-200 hover:text-white font-sans font-medium text-xs border border-surface-border flex items-center gap-1 transition">
+                                    <svg class="w-3.5 h-3.5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"></path>
+                                    </svg>
+                                    <span>{{ t('btn_detail') }}</span>
+                                </button>
+                                <a href="{{ gallery_path }}" target="_blank" class="px-2 py-1 rounded bg-surface-subtle hover:bg-surface-border text-emerald-400 hover:text-emerald-300 font-sans font-medium text-xs border border-surface-border">
+                                    {{ t('btn_gallery') }}
+                                </a>
+                                <a href="{{ direct_path }}" target="_blank" class="px-2 py-1 rounded bg-surface-subtle hover:bg-surface-border text-brand-500 hover:text-brand-400 font-sans font-medium text-xs border border-surface-border">
+                                    {{ t('btn_direct') }}
+                                </a>
+                            </div>
+                        </td>
+                        <td class="py-3 px-3 text-right">
+                            <form action="/web/files/delete/{{ f['id'] }}" method="post" onsubmit="return confirm('{{ t('delete_confirm') }}')">
+                                <button type="submit" class="px-2.5 py-1 rounded bg-red-950/30 hover:bg-red-950 border border-red-900/40 text-red-400 hover:text-red-300 transition text-[11px] font-sans font-medium">
+                                    {{ t('btn_delete') }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="py-16 text-center text-zinc-500 font-sans space-y-3">
+                            <div class="w-12 h-12 rounded-2xl bg-surface-subtle border border-surface-border mx-auto flex items-center justify-center text-zinc-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
+                                </svg>
+                            </div>
+                            <p class="text-sm text-zinc-300 font-medium">
+                                {% if q %}
+                                    {{ t('history_empty_search') }}
+                                {% else %}
+                                    {{ t('no_files') }}
+                                {% endif %}
+                            </p>
+                            <div class="pt-2">
+                                {% if q %}
+                                    <a href="/history?category={{ category }}" class="btn-secondary px-4 py-2 rounded-xl text-xs font-medium">
+                                        Reset Pencarian
+                                    </a>
+                                {% else %}
+                                    <a href="/dashboard" class="btn-primary px-4 py-2 rounded-xl text-xs font-medium">
+                                        Unggah Berkas Sekarang
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Controls Bar -->
+        {% if total_pages > 1 %}
+        <div class="mt-6 pt-4 border-t border-surface-border flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-xs font-mono text-zinc-400">
+                {{ t('history_page_info', current=page, total=total_pages) }}
+            </div>
+
+            <div class="flex items-center gap-1.5">
+                <!-- Tombol Sebelumnya -->
+                {% if page > 1 %}
+                <a href="/history?page={{ page - 1 }}{% if q %}&q={{ q }}{% endif %}{% if category %}&category={{ category }}{% endif %}" class="btn-secondary px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path>
+                    </svg>
+                    <span>{{ t('history_pagination_prev') }}</span>
+                </a>
+                {% else %}
+                <span class="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 bg-surface-subtle/30 border border-surface-border/40 cursor-not-allowed">
+                    {{ t('history_pagination_prev') }}
+                </span>
+                {% endif %}
+
+                <!-- Number Buttons (Display up to 5 adjacent pages) -->
+                {% for p in range(1, total_pages + 1) %}
+                    {% if p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+                        {% if p == page %}
+                        <span class="w-8 h-8 rounded-lg bg-brand-600 text-white font-mono text-xs font-semibold flex items-center justify-center shadow-md">
+                            {{ p }}
+                        </span>
+                        {% else %}
+                        <a href="/history?page={{ p }}{% if q %}&q={{ q }}{% endif %}{% if category %}&category={{ category }}{% endif %}" class="w-8 h-8 rounded-lg bg-surface-subtle hover:bg-surface-border text-zinc-300 font-mono text-xs font-medium flex items-center justify-center transition">
+                            {{ p }}
+                        </a>
+                        {% endif %}
+                    {% elif p == page - 3 or p == page + 3 %}
+                        <span class="w-6 text-center text-zinc-600 text-xs font-mono">...</span>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Tombol Selanjutnya -->
+                {% if page < total_pages %}
+                <a href="/history?page={{ page + 1 }}{% if q %}&q={{ q }}{% endif %}{% if category %}&category={{ category }}{% endif %}" class="btn-secondary px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1">
+                    <span>{{ t('history_pagination_next') }}</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
+                    </svg>
+                </a>
+                {% else %}
+                <span class="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 bg-surface-subtle/30 border border-surface-border/40 cursor-not-allowed">
+                    {{ t('history_pagination_next') }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+</main>
+
+<!-- Jendela Modal Detail & Properti Berkas -->
+<div id="fileDetailModal" class="fixed inset-0 z-50 modal-backdrop hidden items-center justify-center p-4">
+    <div class="surface-card bg-surface-panel max-w-lg w-full p-6 relative shadow-2xl border border-surface-border mx-auto space-y-5" data-aos="zoom-in" data-aos-duration="300">
+        <!-- Close Button -->
+        <button type="button" onclick="closeFileModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-1.5 rounded-lg hover:bg-surface-subtle transition" aria-label="Close">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+
+        <!-- Modal Header -->
+        <div class="flex items-center gap-3 pb-3 border-b border-surface-border pr-8">
+            <div class="w-10 h-10 rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-brand-500 flex-shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
+                </svg>
+            </div>
+            <div class="min-w-0">
+                <h3 class="text-base font-bold font-heading text-white truncate" id="modalFileName">
+                    Nama Berkas
+                </h3>
+                <p class="text-xs text-zinc-400 font-mono" id="modalFileHeaderSub">
+                    {{ t('modal_detail_sub') }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Dynamic Media Thumbnail / Icon Preview -->
+        <div id="modalPreviewBox" class="rounded-xl border border-surface-border bg-surface-base p-3 flex items-center justify-center max-h-48 overflow-hidden">
+            <!-- Dynamic preview injected via JavaScript -->
+        </div>
+
+        <!-- Properties Grid -->
+        <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div class="p-2.5 rounded-lg bg-surface-base border border-surface-border">
+                <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">{{ t('viewer_filesize') }}</span>
+                <span id="modalPropSize" class="text-zinc-200 font-medium">-</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-surface-base border border-surface-border">
+                <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">{{ t('viewer_mimetype') }}</span>
+                <span id="modalPropMime" class="text-zinc-200 font-medium truncate block">-</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-surface-base border border-surface-border">
+                <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">ID Berkas</span>
+                <span id="modalPropId" class="text-brand-500 font-medium">-</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-surface-base border border-surface-border">
+                <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">{{ t('viewer_upload_date') }}</span>
+                <span id="modalPropDate" class="text-zinc-200 font-medium">-</span>
+            </div>
+        </div>
+
+        <!-- 2 Complete Output Link Boxes with Instant Copy -->
+        <div class="space-y-3 pt-1">
+            <!-- Direct URL Box -->
+            <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] font-mono">
+                    <span class="text-zinc-400 font-medium">{{ t('direct_link_label') }}</span>
+                    <span class="text-brand-500 font-bold">HOTLINK</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="modalDirectUrlInput" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-600 select-all">
+                    <button type="button" onclick="copyModalField('modalDirectUrlInput', this)" class="btn-primary px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap">
+                        {{ t('btn_copy') }}
+                    </button>
+                    <a id="modalOpenDirectBtn" href="#" target="_blank" class="btn-secondary p-2 rounded-lg text-zinc-400 hover:text-white" title="Open Direct">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Gallery URL Box -->
+            <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] font-mono">
+                    <span class="text-zinc-400 font-medium">{{ t('gallery_link_label') }}</span>
+                    <span class="text-emerald-400 font-bold">GALLERY</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="modalGalleryUrlInput" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-emerald-600 select-all">
+                    <button type="button" onclick="copyModalField('modalGalleryUrlInput', this)" class="btn-secondary px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap">
+                        {{ t('btn_copy') }}
+                    </button>
+                    <a id="modalOpenGalleryBtn" href="#" target="_blank" class="btn-secondary p-2 rounded-lg text-emerald-400 hover:text-emerald-300" title="Open Gallery">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="flex items-center justify-between pt-2 border-t border-surface-border">
+            <a id="modalDownloadBtn" href="#" download="" class="btn-primary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
+                </svg>
+                <span>{{ t('viewer_download_btn') }}</span>
+            </a>
+            <button type="button" onclick="closeFileModal()" class="btn-secondary px-4 py-2 rounded-lg text-xs font-medium">
+                {{ t('modal_btn_close') }}
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/dashboard.js?v=2.1.0"></script>
+{% endblock %}

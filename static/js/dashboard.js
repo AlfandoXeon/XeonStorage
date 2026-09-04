@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        window.isUploadingActive = true;
         if (dashIdle) dashIdle.classList.add('hidden');
         if (dashLoading) dashLoading.classList.remove('hidden');
         if (dashUploadStatus) dashUploadStatus.textContent = `${file.name}`;
@@ -119,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         xhr.onload = () => {
+            window.isUploadingActive = false;
             if (dashIdle) dashIdle.classList.remove('hidden');
             if (dashLoading) dashLoading.classList.add('hidden');
 
@@ -154,13 +156,30 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         xhr.onerror = () => {
+            window.isUploadingActive = false;
             if (dashIdle) dashIdle.classList.remove('hidden');
             if (dashLoading) dashLoading.classList.add('hidden');
             alert('Network error while uploading file.');
         };
 
+        xhr.onabort = () => {
+            window.isUploadingActive = false;
+            if (dashIdle) dashIdle.classList.remove('hidden');
+            if (dashLoading) dashLoading.classList.add('hidden');
+        };
+
         xhr.send(formData);
     }
+
+    // Protection against accidental page reload / exit during active upload (Like Canva / Google Drive)
+    window.addEventListener('beforeunload', (e) => {
+        if (window.isUploadingActive) {
+            e.preventDefault();
+            const warning = (window.i18nTexts && window.i18nTexts.uploadWarning) || 'Proses unggah berkas sedang berlangsung! Jika Anda keluar atau memuat ulang halaman sekarang, unggahan akan dibatalkan dan berkas tidak akan tersimpan.';
+            e.returnValue = warning;
+            return warning;
+        }
+    });
 });
 
 function showFileModal(fileData) {

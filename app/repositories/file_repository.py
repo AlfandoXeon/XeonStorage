@@ -24,11 +24,49 @@ class FileRepository:
             (file_id,)
         )
 
-    def list_for_user(self, user_id, limit=100):
-        return self.db.fetchall(
-            "SELECT * FROM files WHERE user_id=? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT ?",
-            (user_id, limit)
-        )
+    def list_for_user(self, user_id, limit=100, offset=0, search=None, mime_category=None):
+        conditions = ["user_id=?", "deleted_at IS NULL"]
+        params = [user_id]
+
+        if search and search.strip():
+            conditions.append("original_name LIKE ?")
+            params.append(f"%{search.strip()}%")
+
+        if mime_category == "image":
+            conditions.append("mime_type LIKE 'image/%'")
+        elif mime_category == "video":
+            conditions.append("mime_type LIKE 'video/%'")
+        elif mime_category == "audio":
+            conditions.append("mime_type LIKE 'audio/%'")
+        elif mime_category == "doc":
+            conditions.append("(mime_type LIKE 'application/%' OR mime_type LIKE 'text/%')")
+
+        where_clause = " AND ".join(conditions)
+        sql = f"SELECT * FROM files WHERE {where_clause} ORDER BY created_at DESC LIMIT ? OFFSET ?"
+        params.extend([limit, offset])
+        return self.db.fetchall(sql, tuple(params))
+
+    def count_for_user(self, user_id, search=None, mime_category=None):
+        conditions = ["user_id=?", "deleted_at IS NULL"]
+        params = [user_id]
+
+        if search and search.strip():
+            conditions.append("original_name LIKE ?")
+            params.append(f"%{search.strip()}%")
+
+        if mime_category == "image":
+            conditions.append("mime_type LIKE 'image/%'")
+        elif mime_category == "video":
+            conditions.append("mime_type LIKE 'video/%'")
+        elif mime_category == "audio":
+            conditions.append("mime_type LIKE 'audio/%'")
+        elif mime_category == "doc":
+            conditions.append("(mime_type LIKE 'application/%' OR mime_type LIKE 'text/%')")
+
+        where_clause = " AND ".join(conditions)
+        sql = f"SELECT COUNT(*) as count FROM files WHERE {where_clause}"
+        res = self.db.fetchone(sql, tuple(params))
+        return res["count"] if res else 0
 
     def stats(self, user_id):
         res = self.db.fetchone(

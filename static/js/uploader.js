@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startUpload(file) {
+        window.isUploadingActive = true;
         if (dropzoneIdle) dropzoneIdle.classList.add('hidden');
         if (dropzoneLoading) dropzoneLoading.classList.remove('hidden');
         if (resultContainer) resultContainer.classList.add('hidden');
@@ -127,6 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         xhr.onload = () => {
+            window.isUploadingActive = false;
             if (dropzoneIdle) dropzoneIdle.classList.remove('hidden');
             if (dropzoneLoading) dropzoneLoading.classList.add('hidden');
 
@@ -167,13 +169,30 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         xhr.onerror = () => {
+            window.isUploadingActive = false;
             if (dropzoneIdle) dropzoneIdle.classList.remove('hidden');
             if (dropzoneLoading) dropzoneLoading.classList.add('hidden');
             alert('Network error while uploading.');
         };
 
+        xhr.onabort = () => {
+            window.isUploadingActive = false;
+            if (dropzoneIdle) dropzoneIdle.classList.remove('hidden');
+            if (dropzoneLoading) dropzoneLoading.classList.add('hidden');
+        };
+
         xhr.send(formData);
     }
+
+    // Protection against accidental page reload / exit during active upload (Like Canva / Google Drive)
+    window.addEventListener('beforeunload', (e) => {
+        if (window.isUploadingActive) {
+            e.preventDefault();
+            const warning = (window.i18nTexts && window.i18nTexts.uploadWarning) || 'Proses unggah berkas sedang berlangsung! Jika Anda keluar atau memuat ulang halaman sekarang, unggahan akan dibatalkan dan berkas tidak akan tersimpan.';
+            e.returnValue = warning;
+            return warning;
+        }
+    });
 
     // Expose startUpload for pending file after login
     window.startPendingUpload = startUpload;
@@ -208,3 +227,81 @@ function copyGalleryUrl() {
         }, 2000);
     });
 }
+
+// Mobile QR Modal Logic for Homepage
+function openIndexQrModal(type) {
+    const modal = document.getElementById('indexQrModal');
+    const qrImg = document.getElementById('indexQrImage');
+    const urlDisplay = document.getElementById('indexQrUrlDisplay');
+    const typeLabel = document.getElementById('indexQrTypeLabel');
+    if (!modal || !qrImg) return;
+
+    let targetUrl = '';
+    if (type === 'gallery') {
+        const galEl = document.getElementById('galleryUrl');
+        targetUrl = galEl ? galEl.value : '';
+        if (typeLabel) typeLabel.textContent = 'Gallery URL';
+    } else {
+        const dirEl = document.getElementById('directUrl');
+        targetUrl = dirEl ? dirEl.value : '';
+        if (typeLabel) typeLabel.textContent = 'Direct Hotlink URL';
+    }
+
+    if (!targetUrl) return;
+
+    const encoded = encodeURIComponent(targetUrl);
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encoded}&color=0f172a`;
+    if (urlDisplay) urlDisplay.value = targetUrl;
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeIndexQrModal() {
+    const modal = document.getElementById('indexQrModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+    document.body.style.overflow = '';
+}
+
+function copyIndexQrUrl(btn) {
+    const urlDisplay = document.getElementById('indexQrUrlDisplay');
+    if (!urlDisplay || !urlDisplay.value) return;
+    const originalText = btn.innerHTML;
+    const strCopied = (window.i18nTexts && window.i18nTexts.copied) || 'Copied!';
+
+    navigator.clipboard.writeText(urlDisplay.value).then(() => {
+        btn.innerHTML = `<svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg><span>${strCopied}</span>`;
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+        }, 2000);
+    });
+}
+
+function resetUploadCard() {
+    const resultContainer = document.getElementById('resultContainer');
+    const fileInput = document.getElementById('fileInput');
+    const dropzoneIdle = document.getElementById('dropzoneIdle');
+    if (resultContainer) resultContainer.classList.add('hidden');
+    if (dropzoneIdle) dropzoneIdle.classList.remove('hidden');
+    if (fileInput) fileInput.value = '';
+}
+
+// Close QR modal on click outside and escape
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('indexQrModal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeIndexQrModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeIndexQrModal();
+            }
+        });
+    }
+});
+

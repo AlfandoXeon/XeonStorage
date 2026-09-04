@@ -64,8 +64,11 @@ class FileService:
     def get(self, file_id):
         return self.repo.get(file_id)
 
-    def list(self, user_id):
-        return self.repo.list_for_user(user_id)
+    def list(self, user_id, limit=100, offset=0, search=None, mime_category=None):
+        return self.repo.list_for_user(user_id, limit=limit, offset=offset, search=search, mime_category=mime_category)
+
+    def count(self, user_id, search=None, mime_category=None):
+        return self.repo.count_for_user(user_id, search=search, mime_category=mime_category)
 
     def stats(self, user_id):
         return self.repo.stats(user_id)

@@ -106,18 +106,26 @@
         </div>
     </section>
 
-    <!-- Recent Files & History Section with AOS -->
+    <!-- Recent Files Section with AOS -->
     <section class="surface-card p-4 sm:p-6" data-aos="fade-up" data-aos-delay="200">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
             <div>
-                <h2 class="font-heading font-semibold text-lg text-white">
-                    {{ t('dash_files_title') }}
+                <h2 class="font-heading font-semibold text-lg text-white flex items-center gap-2">
+                    <span>{{ t('dash_recent_files_title') }}</span>
                 </h2>
-                <p class="text-xs text-zinc-400">{{ t('dash_files_desc') }}</p>
+                <p class="text-xs text-zinc-400">{{ t('dash_recent_files_desc') }}</p>
             </div>
-            <span class="text-xs font-mono text-zinc-400 bg-surface-subtle px-2.5 py-1 rounded-md border border-surface-border">
-                {{ t('dash_total_files_badge', count=files|length) }}
-            </span>
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-mono text-zinc-400 bg-surface-subtle px-2.5 py-1 rounded-md border border-surface-border">
+                    {{ t('dash_recent_files_badge', shown=files|length, total=total_files|default(files|length)) }}
+                </span>
+                <a href="/history" class="btn-secondary px-3 py-1 rounded-md text-xs font-medium text-brand-400 hover:text-white flex items-center gap-1 border-brand-600/30 hover:border-brand-500 transition">
+                    <span>{{ t('dash_view_all_history') }}</span>
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path>
+                    </svg>
+                </a>
+            </div>
         </div>
 
         <div class="overflow-x-auto -mx-4 sm:mx-0">
@@ -194,6 +202,29 @@
                 </tbody>
             </table>
         </div>
+
+        {% if total_files|default(files|length) > 0 %}
+        <!-- View All History CTA Banner -->
+        <div class="mt-5 pt-4 border-t border-surface-border flex flex-col sm:flex-row items-center justify-between gap-3 bg-surface-subtle/40 rounded-xl p-4">
+            <div class="flex items-center gap-3 text-xs text-zinc-400">
+                <div class="w-8 h-8 rounded-lg bg-surface-base border border-surface-border flex items-center justify-center text-brand-400 flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <span class="font-semibold text-zinc-200 block">{{ t('dash_recent_files_badge', shown=files|length, total=total_files|default(files|length)) }}</span>
+                    <span class="text-[11px] text-zinc-500">Jelajahi, cari nama, dan filter berkas Anda di halaman riwayat khusus.</span>
+                </div>
+            </div>
+            <a href="/history" class="btn-primary px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-brand-950/40 hover:shadow-brand-600/30 transition whitespace-nowrap">
+                <span>{{ t('dash_view_all_history') }}</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path>
+                </svg>
+            </a>
+        </div>
+        {% endif %}
     </section>
 </main>
 

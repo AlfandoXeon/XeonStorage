@@ -89,7 +89,8 @@
             copyLink: "{{ t('copy_link') }}",
             copyKey: "{{ t('btn_copy') }}",
             sizeLimitError: "{{ t('size_limit_error') }}",
-            authUploadNotice: "{{ t('auth_upload_notice') }}"
+            authUploadNotice: "{{ t('auth_upload_notice') }}",
+            uploadWarning: "{{ t('upload_in_progress_warning') }}"
         };
     </script>
 </head>
@@ -129,6 +130,12 @@
                     <a href="/dashboard" class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-subtle border border-surface-border text-zinc-200 hover:text-white text-xs font-mono transition" title="{{ username }}">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                         <span class="font-medium text-white max-w-[110px] truncate">{{ username }}</span>
+                    </a>
+                    <a href="/history" class="text-zinc-400 hover:text-white transition font-medium text-xs flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>{{ t('nav_history') }}</span>
                     </a>
                     <a href="/api-keys" class="text-zinc-400 hover:text-white transition font-medium text-xs flex items-center gap-1">
                         <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -198,6 +205,9 @@
             {% if user_id %}
                 <a href="/dashboard" class="block text-sm text-zinc-200 hover:text-white py-2 font-medium border-b border-surface-border/50">
                     {{ t('nav_dashboard') }}
+                </a>
+                <a href="/history" class="block text-sm text-zinc-200 hover:text-white py-2 font-medium border-b border-surface-border/50">
+                    {{ t('nav_history') }}
                 </a>
                 <a href="/api-keys" class="block text-sm text-zinc-200 hover:text-white py-2 font-medium border-b border-surface-border/50">
                     {{ t('nav_api_keys') }}
@@ -421,6 +431,11 @@
                             <li>
                                 <a href="/dashboard" class="text-zinc-400 hover:text-white transition block">
                                     {{ t('footer_nav_dashboard') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/history" class="text-zinc-400 hover:text-white transition block">
+                                    {{ t('nav_history') }}
                                 </a>
                             </li>
                             <li>

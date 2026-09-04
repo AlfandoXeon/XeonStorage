@@ -1,3 +1,4 @@
+import math
 from fastapi import APIRouter, Request, Form, UploadFile, File, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from app.dependencies import get
@@ -136,7 +137,8 @@ def delete_file_web(request: Request, file_id: str):
     if not uid:
         return RedirectResponse("/?auth=login", 303)
     get("files").delete(file_id, uid)
-    return RedirectResponse("/dashboard", 303)
+    referer = request.headers.get("referer", "/dashboard")
+    return RedirectResponse(referer if "/history" in referer else "/dashboard", 303)
 
 @router.get("/v/{file_id}", response_class=HTMLResponse)
 @router.get("/view/{file_id}", response_class=HTMLResponse)
@@ -244,13 +246,48 @@ def dashboard(request: Request):
     if not uid:
         return RedirectResponse("/?auth=login", 303)
     stats = get("files").stats(uid)
-    files = get("files").list(uid)
+    files = get("files").list(uid, limit=5)
     return get("templates").TemplateResponse(
         request,
         "dashboard.html",
         get_context(request, {
             "stats": stats,
-            "files": files
+            "files": files,
+            "total_files": stats.get("files", 0)
+        })
+    )
+
+@router.get("/history", response_class=HTMLResponse)
+def history_page(request: Request, page: int = 1, q: str = None, category: str = "all"):
+    uid = user(request)
+    if not uid:
+        return RedirectResponse("/?auth=login", 303)
+    
+    clean_q = q.strip() if q and q.strip() else None
+    cat = category if category in ["image", "video", "audio", "doc"] else None
+    
+    limit = 15
+    page = max(1, page)
+    total_count = get("files").count(uid, search=clean_q, mime_category=cat)
+    total_pages = max(1, math.ceil(total_count / limit))
+    if page > total_pages:
+        page = total_pages
+    offset = (page - 1) * limit
+
+    files = get("files").list(uid, limit=limit, offset=offset, search=clean_q, mime_category=cat)
+    stats = get("files").stats(uid)
+
+    return get("templates").TemplateResponse(
+        request,
+        "history.html",
+        get_context(request, {
+            "stats": stats,
+            "files": files,
+            "total_count": total_count,
+            "page": page,
+            "total_pages": total_pages,
+            "q": clean_q or "",
+            "category": category or "all"
         })
     )
 
