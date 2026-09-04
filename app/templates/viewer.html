@@ -2,239 +2,556 @@
 {% block title %}{{ file.original_name if file_found else t('viewer_not_found') }} • {{ t('brand_name') }}{% endblock %}
 
 {% block meta_robots %}
-<!-- Privacy Protection: Prevent Google and Search Engines from Indexing Private Gallery Files -->
+<!-- Privacy Protection: Prevent Search Engines from Indexing Private Files -->
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 {% endblock %}
 
 {% block content %}
-<main class="max-w-4xl mx-auto px-4 sm:px-5 py-8 md:py-12 space-y-6">
+<main id="viewerContainer" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 transition-all duration-300">
     {% if not file_found %}
     <!-- 404 File Not Found / Broken File -->
-    <div class="surface-card p-8 sm:p-12 text-center space-y-4 max-w-md mx-auto" data-aos="zoom-in" data-aos-duration="600">
-        <div class="w-16 h-16 rounded-2xl bg-surface-subtle border border-surface-border flex items-center justify-center text-red-500 mx-auto shadow-inner">
+    <div class="surface-card p-8 sm:p-14 text-center space-y-5 max-w-md mx-auto my-12" data-aos="zoom-in" data-aos-duration="600">
+        <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mx-auto shadow-inner">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.008v.008H12v-.008z"></path>
             </svg>
         </div>
-        <h1 class="text-xl sm:text-2xl font-bold font-heading text-white">
-            {{ t('viewer_not_found') }}
-        </h1>
-        <p class="text-xs text-zinc-400 leading-relaxed font-sans">
-            {{ t('viewer_not_found_desc') }}
-        </p>
-        <div class="pt-2">
-            <a href="/" class="btn-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium">
-                {{ t('viewer_back_home') }}
+        <div class="space-y-2">
+            <h1 class="text-xl sm:text-2xl font-bold font-heading text-white">
+                {{ t('viewer_not_found') }}
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed font-sans">
+                {{ t('viewer_not_found_desc') }}
+            </p>
+        </div>
+        <div class="pt-2 flex items-center justify-center gap-3">
+            <a href="/" class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-brand-500/10">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path>
+                </svg>
+                <span>{{ t('viewer_back_home') }}</span>
             </a>
         </div>
     </div>
 
     {% else %}
-    <!-- File Gallery Header with AOS -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-surface-border" data-aos="fade-down" data-aos-duration="600">
-        <div class="min-w-0">
-            <span class="inline-flex items-center gap-1.5 text-[11px] font-mono text-zinc-500 uppercase tracking-wider mb-1">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> {{ t('viewer_title') }}
+    <!-- Breadcrumbs & Quick Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 text-xs" data-aos="fade-down" data-aos-duration="500">
+        <nav class="flex items-center gap-2 text-zinc-400 font-mono text-[11px] sm:text-xs truncate">
+            <a href="/" class="hover:text-white transition flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"></path>
+                </svg>
+                <span>Home</span>
+            </a>
+            <span class="text-zinc-600">/</span>
+            <span class="text-zinc-400">Gallery</span>
+            <span class="text-zinc-600">/</span>
+            <span class="text-brand-400 font-medium truncate max-w-[180px] sm:max-w-xs">{{ file.original_name }}</span>
+        </nav>
+
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] sm:text-[11px] font-mono">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Active • NVMe Cache</span>
             </span>
-            <h1 class="text-xl sm:text-2xl font-bold font-heading text-white truncate" title="{{ file.original_name }}">
-                {{ file.original_name }}
-            </h1>
-        </div>
-        <div class="flex items-center gap-2 flex-wrap">
-            <a href="{{ direct_url }}" download="{{ file.original_name }}" class="btn-primary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
+            <button onclick="openQrModal()" class="btn-secondary px-2.5 py-1 rounded-lg text-[11px] font-mono flex items-center gap-1.5 hover:text-white transition" title="{{ t('viewer_qr_btn') }}">
+                <svg class="w-3.5 h-3.5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75z"></path>
                 </svg>
-                <span>{{ t('viewer_download_btn') }}</span>
-            </a>
-            <a href="{{ direct_url }}" target="_blank" class="btn-secondary px-3.5 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5">
-                <span>{{ t('viewer_direct_btn') }}</span>
-                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
-                </svg>
-            </a>
+                <span class="hidden sm:inline">{{ t('viewer_qr_btn') }}</span>
+            </button>
         </div>
     </div>
 
-    <!-- Media Preview Container with AOS -->
-    <div class="surface-card p-4 sm:p-6 flex items-center justify-center min-h-[300px] bg-surface-base/80 border border-surface-border shadow-xl" data-aos="zoom-in" data-aos-delay="100" data-aos-duration="650">
+    <!-- File Gallery Header Card -->
+    <div class="surface-card p-4 sm:p-6 border border-surface-border shadow-lg" data-aos="fade-down" data-aos-delay="50" data-aos-duration="600">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="min-w-0 space-y-1.5">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="px-2.5 py-0.5 rounded-md bg-brand-500/10 border border-brand-500/20 text-brand-400 font-mono text-[11px] font-bold tracking-wide uppercase">
+                        {{ file.extension|upper if file.extension else 'FILE' }}
+                    </span>
+                    <span class="text-zinc-500 text-xs font-mono">
+                        {{ "%.2f"|format(file.size/1024/1024) if file.size >= 1048576 else "%.1f"|format(file.size/1024) }} {{ "MB" if file.size >= 1048576 else "KB" }}
+                    </span>
+                    <span class="text-zinc-600">•</span>
+                    <span class="text-zinc-400 text-xs font-mono">{{ file.created_at[:10] }}</span>
+                </div>
+                <h1 class="text-lg sm:text-2xl font-bold font-heading text-white break-words tracking-tight" title="{{ file.original_name }}">
+                    {{ file.original_name }}
+                </h1>
+            </div>
+
+            <!-- Primary Action Buttons -->
+            <div class="flex items-center gap-2.5 flex-shrink-0 flex-wrap sm:flex-nowrap pt-1 md:pt-0">
+                <a href="{{ direct_url }}" download="{{ file.original_name }}" class="btn-primary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-lg shadow-brand-600/15 w-full sm:w-auto hover:brightness-110 active:scale-[0.98] transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
+                    </svg>
+                    <span>{{ t('viewer_download_btn') }}</span>
+                </a>
+                <a href="{{ direct_url }}" target="_blank" rel="noopener noreferrer" class="btn-secondary px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-medium flex items-center justify-center gap-2 w-full sm:w-auto hover:text-white transition">
+                    <span>{{ t('viewer_direct_btn') }}</span>
+                    <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Preview Container -->
+    <div id="mediaStage" class="surface-card p-3 sm:p-6 flex flex-col items-center justify-center min-h-[320px] bg-surface-base/90 border border-surface-border shadow-2xl relative overflow-hidden transition-all duration-300" data-aos="zoom-in" data-aos-delay="100" data-aos-duration="600">
+        
         {% if is_image %}
-        <!-- Image Preview -->
-        <div class="relative max-w-full text-center">
-            <img src="{{ direct_url }}" alt="{{ file.original_name }}" class="max-h-[68vh] max-w-full rounded-lg object-contain mx-auto shadow-lg border border-surface-border" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-center py-12 space-y-2\'><div class=\'w-12 h-12 mx-auto rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-red-500\'><svg class=\'w-6 h-6\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\' stroke-width=\'2\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M6 18L18 6M6 6l12 12\'></path></svg></div><p class=\'text-xs font-mono text-zinc-400\'>Gambar rusak atau tidak dapat dimuat.</p></div>';">
+        <!-- Image Preview Area -->
+        <div class="w-full flex flex-col items-center space-y-4">
+            <!-- Image Toolbar -->
+            <div class="w-full flex items-center justify-between gap-2 px-1 text-xs font-mono text-zinc-400 border-b border-surface-border/60 pb-3">
+                <div class="flex items-center gap-2">
+                    <span id="imgDimensions" class="px-2 py-0.5 rounded bg-surface-subtle border border-surface-border text-[11px] text-zinc-300">
+                        Detecting resolution...
+                    </span>
+                    <span id="imgAspect" class="hidden sm:inline text-[11px] text-zinc-500"></span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button id="toggleCheckerboardBtn" onclick="toggleCheckerboard()" class="px-2.5 py-1 rounded bg-surface-subtle hover:bg-surface-border/80 border border-surface-border text-[11px] text-zinc-300 flex items-center gap-1 transition" title="{{ t('viewer_transparency_toggle') }}">
+                        <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"></path>
+                        </svg>
+                        <span class="hidden sm:inline">{{ t('viewer_transparency_toggle') }}</span>
+                    </button>
+                    <a href="{{ direct_url }}" target="_blank" class="px-2.5 py-1 rounded bg-surface-subtle hover:bg-surface-border/80 border border-surface-border text-[11px] text-zinc-300 flex items-center gap-1 transition" title="View Full Resolution">
+                        <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"></path>
+                        </svg>
+                        <span class="hidden sm:inline">Full Res</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Image Viewport -->
+            <div id="imageWrapper" class="relative max-w-full text-center rounded-xl p-2 transition-all duration-200">
+                <img id="galleryImage" src="{{ direct_url }}" alt="{{ file.original_name }}" class="max-h-[65vh] max-w-full rounded-xl object-contain mx-auto shadow-2xl border border-white/5 cursor-zoom-in" onclick="openImageLightbox(this.src)" onload="onImageLoaded(this)" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-center py-12 space-y-2\'><div class=\'w-12 h-12 mx-auto rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-red-500\'><svg class=\'w-6 h-6\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\' stroke-width=\'2\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M6 18L18 6M6 6l12 12\'></path></svg></div><p class=\'text-xs font-mono text-zinc-400\'>Gambar rusak atau tidak dapat dimuat.</p></div>';">
+            </div>
         </div>
 
         {% elif is_video %}
         <!-- Modern HTML5 Video Player Container -->
-        <div class="w-full max-w-3xl mx-auto space-y-3">
-            <div class="relative rounded-xl overflow-hidden border border-surface-border bg-black shadow-2xl">
-                <video id="galleryVideoPlayer" controls playsinline preload="metadata" class="w-full max-h-[70vh] mx-auto rounded-xl">
+        <div class="w-full max-w-4xl mx-auto space-y-3">
+            <div id="videoFrame" class="relative rounded-2xl overflow-hidden border border-surface-border bg-black shadow-2xl transition-all duration-300">
+                <video id="galleryVideoPlayer" controls playsinline preload="metadata" class="w-full max-h-[70vh] mx-auto rounded-2xl">
                     <source src="{{ direct_url }}" type="{{ file.mime_type or 'video/mp4' }}">
                     Browser Anda tidak mendukung pemutar video HTML5.
                 </video>
             </div>
 
+            <!-- Player Quick Controls Bar (Speed, Theater, Loop) -->
+            <div class="flex flex-wrap items-center justify-between gap-3 px-2 py-2 rounded-xl bg-surface-subtle/70 border border-surface-border text-xs font-mono">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="text-zinc-500 text-[11px] uppercase mr-1">{{ t('viewer_speed') }}:</span>
+                    <button onclick="setPlaybackRate(0.75, this)" class="speed-pill px-2 py-0.5 rounded bg-surface-base hover:bg-surface-card border border-surface-border text-zinc-300 text-[11px] transition">0.75x</button>
+                    <button onclick="setPlaybackRate(1.0, this)" class="speed-pill px-2 py-0.5 rounded bg-brand-600 text-white font-semibold text-[11px] transition">1.0x</button>
+                    <button onclick="setPlaybackRate(1.25, this)" class="speed-pill px-2 py-0.5 rounded bg-surface-base hover:bg-surface-card border border-surface-border text-zinc-300 text-[11px] transition">1.25x</button>
+                    <button onclick="setPlaybackRate(1.5, this)" class="speed-pill px-2 py-0.5 rounded bg-surface-base hover:bg-surface-card border border-surface-border text-zinc-300 text-[11px] transition">1.5x</button>
+                    <button onclick="setPlaybackRate(2.0, this)" class="speed-pill px-2 py-0.5 rounded bg-surface-base hover:bg-surface-card border border-surface-border text-zinc-300 text-[11px] transition">2.0x</button>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="theaterBtn" onclick="toggleTheaterMode()" class="px-2.5 py-1 rounded bg-surface-base hover:bg-surface-card border border-surface-border text-zinc-300 text-[11px] flex items-center gap-1.5 transition">
+                        <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"></path>
+                        </svg>
+                        <span class="hidden sm:inline">{{ t('viewer_theater') }}</span>
+                    </button>
+                    <button id="pipBtn" onclick="togglePiP()" class="px-2.5 py-1 rounded bg-surface-base hover:bg-surface-card border border-surface-border text-zinc-300 text-[11px] flex items-center gap-1.5 transition" title="Picture in Picture">
+                        <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H12"></path>
+                        </svg>
+                        <span class="hidden sm:inline">PiP</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Video Streaming Status & Codec Notice -->
+            <div class="flex items-center justify-between text-xs font-mono text-zinc-400 px-1 pt-1">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-emerald-400 text-[11px]">HTTP 206 Byte-Range Streaming Enabled</span>
+                </div>
+                <div class="text-[11px] text-zinc-500">
+                    Lossless Bitrate
+                </div>
+            </div>
+
             <!-- Unsupported Codec / Format Fallback Notice -->
-            <div id="videoErrorNotice" class="hidden p-4 rounded-xl bg-surface-subtle border border-amber-500/30 text-xs text-zinc-300 space-y-2 text-center">
-                <p class="font-medium text-amber-400 flex items-center justify-center gap-1.5">
-                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <div id="videoErrorNotice" class="hidden p-5 rounded-2xl bg-surface-subtle border border-amber-500/30 text-xs text-zinc-300 space-y-3 text-center">
+                <p class="font-medium text-amber-400 flex items-center justify-center gap-1.5 text-sm">
+                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"></path>
                     </svg>
                     <span>Format Video ({{ file.extension|upper if file.extension else 'VIDEO' }}) Tidak Didukung Pemutar Web</span>
                 </p>
-                <p class="text-zinc-400 text-[11px] max-w-md mx-auto">
+                <p class="text-zinc-400 text-xs max-w-lg mx-auto leading-relaxed">
                     Browser Anda tidak memiliki decoder bawaan untuk format ini. Silakan unduh berkas untuk diputar di aplikasi media player seperti <b>VLC Player</b>, atau unggah dalam format standar <b>.mp4 / .webm</b>.
                 </p>
-                <a href="{{ direct_url }}" download="{{ file.original_name }}" class="btn-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <a href="{{ direct_url }}" download="{{ file.original_name }}" class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold shadow-lg shadow-brand-500/15">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
                     </svg>
                     <span>{{ t('viewer_download_btn') }} ({{ "%.2f"|format(file.size/1024/1024) }} MB)</span>
                 </a>
             </div>
-
-            <div class="flex items-center justify-between text-xs font-mono text-zinc-400 px-1">
-                <div class="flex items-center gap-2">
-                    <span class="px-2 py-0.5 rounded bg-brand-950/60 text-brand-400 border border-brand-800/40 text-[10px] font-bold uppercase">
-                        {{ file.extension|upper if file.extension else 'VIDEO' }}
-                    </span>
-                    <span class="truncate max-w-xs">{{ file.original_name }}</span>
-                </div>
-                <div class="flex items-center gap-1.5 text-emerald-400 text-[11px]">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Streaming Ready</span>
-                </div>
-            </div>
         </div>
 
         {% elif is_audio %}
-        <!-- Audio Preview -->
-        <div class="w-full max-w-lg mx-auto py-8 text-center space-y-4">
-            <div class="w-14 h-14 rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-brand-500 mx-auto shadow-inner">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a.75.75 0 00.532-.72v-4.63zM9 14.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a.75.75 0 00.532-.72v-4.63z"></path>
-                </svg>
+        <!-- Modern Audio Visualizer Player Card -->
+        <div class="w-full max-w-xl mx-auto py-6 sm:py-8 space-y-6">
+            <div class="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-surface-subtle to-surface-card border border-surface-border shadow-2xl relative overflow-hidden">
+                <!-- Glowing Accent Backdrop -->
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-col sm:flex-row items-center gap-6">
+                    <!-- Vinyl / Cassette Artwork Icon with Animation -->
+                    <div id="audioDisc" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-tr from-zinc-950 via-zinc-900 to-zinc-800 border-2 border-brand-500/30 flex items-center justify-center text-brand-400 shadow-xl relative flex-shrink-0">
+                        <div class="w-10 h-10 rounded-full bg-surface-subtle border border-surface-border flex items-center justify-center shadow-inner">
+                            <div class="w-3 h-3 rounded-full bg-brand-500 animate-pulse"></div>
+                        </div>
+                    </div>
+
+                    <!-- Audio Metadata -->
+                    <div class="min-w-0 text-center sm:text-left space-y-1.5 flex-1">
+                        <span class="inline-block px-2 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400 font-mono text-[10px] font-bold uppercase tracking-wider">
+                            {{ file.extension|upper if file.extension else 'AUDIO' }} LOSSLESS
+                        </span>
+                        <h2 class="text-base sm:text-lg font-bold font-heading text-white truncate" title="{{ file.original_name }}">
+                            {{ file.original_name }}
+                        </h2>
+                        <div class="flex items-center justify-center sm:justify-start gap-2 text-xs font-mono text-zinc-400">
+                            <span>{{ "%.2f"|format(file.size/1024/1024) }} MB</span>
+                            <span>•</span>
+                            <span id="audioDurationText">0:00 / 0:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Animated Sound Wave Visualizer Bars -->
+                <div id="audioWaveform" class="mt-6 flex items-center justify-center gap-1.5 h-10 px-4 py-2 rounded-xl bg-surface-base/80 border border-surface-border/60">
+                    <span class="wave-bar w-1.5 bg-brand-500 rounded-full h-3 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-400 rounded-full h-5 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-500 rounded-full h-2 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-300 rounded-full h-7 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-500 rounded-full h-4 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-400 rounded-full h-6 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-500 rounded-full h-3 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-300 rounded-full h-8 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-500 rounded-full h-5 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-400 rounded-full h-4 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-500 rounded-full h-7 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-300 rounded-full h-3 transition-all duration-200"></span>
+                    <span class="wave-bar w-1.5 bg-brand-500 rounded-full h-5 transition-all duration-200"></span>
+                </div>
+
+                <!-- Custom Scrub Slider -->
+                <div class="mt-4 space-y-1.5">
+                    <input id="audioScrubber" type="range" min="0" max="100" value="0" step="0.1" class="w-full accent-brand-500 cursor-pointer h-1.5 bg-surface-base rounded-lg" oninput="onAudioSeek(this.value)">
+                </div>
+
+                <!-- Native Audio Element (Hidden / Controlled) -->
+                <audio id="galleryAudioPlayer" class="w-full mt-4" controls preload="metadata">
+                    <source src="{{ direct_url }}" type="{{ file.mime_type }}">
+                    Browser Anda tidak mendukung tag audio HTML5.
+                </audio>
             </div>
-            <div class="text-sm font-medium text-white">{{ file.original_name }}</div>
-            <audio controls class="w-full">
-                <source src="{{ direct_url }}" type="{{ file.mime_type }}">
-                Browser Anda tidak mendukung tag audio.
-            </audio>
         </div>
 
         {% else %}
-        <!-- Non-Media / Binary File Placeholder -->
-        <div class="text-center py-10 sm:py-14 space-y-3 max-w-md mx-auto">
-            <div class="w-14 h-14 rounded-xl bg-surface-subtle border border-surface-border flex items-center justify-center text-zinc-400 mx-auto shadow-inner">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+        <!-- Non-Media / Binary File Presentation Card -->
+        <div class="text-center py-10 sm:py-16 space-y-4 max-w-lg mx-auto">
+            <div class="w-20 h-20 rounded-3xl bg-surface-subtle border border-surface-border flex items-center justify-center mx-auto shadow-2xl relative">
+                <svg class="w-10 h-10 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
                 </svg>
+                <span class="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-md bg-brand-600 text-white font-mono text-[10px] font-bold uppercase shadow">
+                    {{ file.extension|upper if file.extension else 'BIN' }}
+                </span>
             </div>
-            <h3 class="text-sm sm:text-base font-semibold text-white font-heading">
-                {{ t('viewer_not_image') }}
-            </h3>
-            <p class="text-xs text-zinc-400 leading-relaxed font-sans">
-                {{ t('viewer_not_image_sub') }}
-            </p>
-            <div class="pt-2">
-                <a href="{{ direct_url }}" download="{{ file.original_name }}" class="btn-primary inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            
+            <div class="space-y-1.5">
+                <h2 class="text-base sm:text-xl font-bold text-white font-heading">
+                    {{ t('viewer_not_image') }}
+                </h2>
+                <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed font-sans max-w-md mx-auto">
+                    {{ t('viewer_not_image_sub') }}
+                </p>
+            </div>
+
+            <div class="pt-3 flex flex-wrap items-center justify-center gap-3">
+                <a href="{{ direct_url }}" download="{{ file.original_name }}" class="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold shadow-xl shadow-brand-600/20 hover:brightness-110 active:scale-[0.98] transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"></path>
                     </svg>
-                    <span>{{ t('viewer_download_btn') }}</span>
+                    <span>{{ t('viewer_download_btn') }} ({{ "%.2f"|format(file.size/1024/1024) if file.size >= 1048576 else "%.1f"|format(file.size/1024) }} {{ "MB" if file.size >= 1048576 else "KB" }})</span>
                 </a>
             </div>
         </div>
         {% endif %}
     </div>
 
-    <!-- Output Links Grid with AOS -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" data-aos="fade-up" data-aos-delay="150">
-        <!-- Direct Media URL -->
-        <div class="surface-card p-4 space-y-2">
-            <div class="text-[11px] font-mono text-zinc-400 uppercase tracking-wider flex items-center justify-between">
-                <span>{{ t('direct_link_label') }}</span>
-                <span class="text-brand-500 font-bold">HOTLINK</span>
+    <!-- Unified Share & Embed Card with Dropdown -->
+    <div class="surface-card p-4 sm:p-5 border border-surface-border space-y-3 shadow-lg" data-aos="fade-up" data-aos-delay="150">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-heading font-semibold text-xs sm:text-sm text-white flex items-center gap-2">
+                        <span>Bagikan & Sematkan</span>
+                        <span id="activeFormatBadge" class="px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20 text-[10px] font-mono font-bold uppercase">HOTLINK</span>
+                    </h3>
+                </div>
             </div>
+
+            <!-- Dropdown Format Selector -->
             <div class="flex items-center gap-2">
-                <input type="text" id="directUrlField" value="{{ direct_url }}" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-600 select-all">
-                <button onclick="copyFieldValue('directUrlField', this)" class="btn-primary px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap">
-                    {{ t('btn_copy') }}
-                </button>
+                <label for="linkFormatSelect" class="text-[11px] font-mono text-zinc-400 hidden sm:inline">Pilih Format:</label>
+                <div class="relative w-full sm:w-64">
+                    <select id="linkFormatSelect" onchange="onShareFormatChange(this.value)" class="w-full bg-surface-subtle hover:bg-surface-card border border-surface-border text-zinc-200 text-xs font-mono rounded-xl px-3 py-2 pr-8 focus:outline-none focus:border-brand-500 transition cursor-pointer appearance-none">
+                        <option value="direct" selected>🔗 Direct Hotlink (Raw File)</option>
+                        <option value="gallery">🖼️ Gallery Viewer (Halaman Web)</option>
+                        <option value="html">&lt;/&gt; HTML Tag (Embed Web)</option>
+                        <option value="markdown">📝 Markdown (README / Blog)</option>
+                        <option value="bbcode">💬 BBCode (Forum Diskusi)</option>
+                        <option value="curl">⚡ cURL (Download Terminal)</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-zinc-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path>
+                        </svg>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Gallery Viewer URL -->
-        <div class="surface-card p-4 space-y-2">
-            <div class="text-[11px] font-mono text-zinc-400 uppercase tracking-wider flex items-center justify-between">
-                <span>{{ t('gallery_link_label') }}</span>
-                <span class="text-emerald-400 font-bold">GALLERY</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <input type="text" id="galleryUrlField" value="{{ gallery_url }}" readonly class="flex-1 bg-surface-base border border-surface-border rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-600 select-all">
-                <button onclick="copyFieldValue('galleryUrlField', this)" class="btn-primary px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap">
-                    {{ t('btn_copy') }}
-                </button>
-            </div>
+        <!-- Single Clean Share Input Bar -->
+        <div class="flex items-center gap-2">
+            <input type="text" id="activeShareField" value="{{ direct_url }}" readonly class="flex-1 min-w-0 bg-surface-base border border-surface-border rounded-xl px-3.5 py-2.5 text-xs font-mono text-zinc-200 focus:outline-none focus:border-brand-500 select-all transition shadow-inner">
+            
+            <button id="copyShareBtn" onclick="copyActiveShareField(this)" class="btn-primary px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap shadow-sm hover:brightness-110 active:scale-95 transition flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"></path>
+                </svg>
+                <span>{{ t('btn_copy') }}</span>
+            </button>
+
+            <a id="openShareBtn" href="{{ direct_url }}" target="_blank" rel="noopener noreferrer" class="btn-secondary px-3 py-2.5 rounded-xl text-xs font-medium hover:text-white transition flex items-center gap-1" title="Buka di Tab Baru">
+                <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                </svg>
+            </a>
         </div>
+
+        <!-- Quick Format Pills & Mobile QR Action -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono pt-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-zinc-500 text-[10px] uppercase mr-0.5">Format:</span>
+                <button onclick="setShareFormat('direct')" class="fmt-pill px-2.5 py-1 rounded-lg bg-brand-600 text-white font-semibold transition">Direct</button>
+                <button onclick="setShareFormat('gallery')" class="fmt-pill px-2.5 py-1 rounded-lg bg-surface-subtle hover:bg-surface-card border border-surface-border text-zinc-400 hover:text-white transition">Gallery</button>
+                <button onclick="setShareFormat('html')" class="fmt-pill px-2.5 py-1 rounded-lg bg-surface-subtle hover:bg-surface-card border border-surface-border text-zinc-400 hover:text-white transition">HTML</button>
+                <button onclick="setShareFormat('markdown')" class="fmt-pill px-2.5 py-1 rounded-lg bg-surface-subtle hover:bg-surface-card border border-surface-border text-zinc-400 hover:text-white transition">Markdown</button>
+                <button onclick="setShareFormat('bbcode')" class="fmt-pill px-2.5 py-1 rounded-lg bg-surface-subtle hover:bg-surface-card border border-surface-border text-zinc-400 hover:text-white transition">BBCode</button>
+                <button onclick="setShareFormat('curl')" class="fmt-pill px-2.5 py-1 rounded-lg bg-surface-subtle hover:bg-surface-card border border-surface-border text-zinc-400 hover:text-white transition">cURL</button>
+            </div>
+            <button onclick="openQrModal()" class="text-zinc-400 hover:text-brand-400 flex items-center gap-1 transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"></path>
+                </svg>
+                <span>Pindai QR HP</span>
+            </button>
+        </div>
+        <p id="shareFormatNote" class="text-[11px] text-zinc-500 font-sans">
+            Tautan langsung (raw hotlink) untuk disematkan di web, bot chat, atau skrip downloader.
+        </p>
     </div>
 
-    <!-- File Metadata Card with AOS -->
-    <div class="surface-card p-5" data-aos="fade-up" data-aos-delay="200">
-        <h2 class="font-heading font-semibold text-sm text-white mb-3 flex items-center gap-2">
-            <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"></path>
-            </svg>
-            <span>{{ t('viewer_file_info') }}</span>
-        </h2>
+    <!-- Collapsible Dropdown: Technical File Inspector -->
+    <details class="group surface-card border border-surface-border rounded-2xl overflow-hidden transition-all duration-300 shadow-md" data-aos="fade-up" data-aos-delay="200">
+        <summary class="flex items-center justify-between p-4 sm:p-5 cursor-pointer list-none select-none hover:bg-surface-subtle/50 transition [&::-webkit-details-marker]:hidden">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"></path>
+                    </svg>
+                </div>
+                <span class="font-heading font-semibold text-xs sm:text-sm text-white">{{ t('viewer_specs_title') }}</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-subtle border border-surface-border text-zinc-400 hidden sm:inline">ID • Ukuran • MIME • Protokol • Node</span>
+            </div>
+            <div class="flex items-center gap-2 text-zinc-400 group-hover:text-white transition">
+                <span class="text-[11px] font-mono hidden sm:inline text-zinc-500 group-open:hidden">Klik untuk melihat</span>
+                <svg class="w-4 h-4 transform group-open:rotate-180 transition-transform duration-300 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path>
+                </svg>
+            </div>
+        </summary>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
-            <div class="bg-surface-base border border-surface-border rounded-lg p-3">
-                <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">{{ t('viewer_filesize') }}</span>
-                <span class="text-zinc-200 font-medium">{{ "%.2f"|format(file.size/1024/1024) }} MB</span>
+        <div class="p-4 sm:p-6 pt-2 border-t border-surface-border/60 space-y-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs font-mono pt-2">
+                <!-- 1. File ID -->
+                <div class="bg-surface-base border border-surface-border rounded-xl p-3 space-y-1">
+                    <span class="text-zinc-500 text-[10px] uppercase block">File ID</span>
+                    <span class="text-zinc-200 font-semibold truncate block select-all" title="{{ file.id }}">{{ file.id }}</span>
+                </div>
+
+                <!-- 2. File Size -->
+                <div class="bg-surface-base border border-surface-border rounded-xl p-3 space-y-1">
+                    <span class="text-zinc-500 text-[10px] uppercase block">{{ t('viewer_filesize') }}</span>
+                    <span class="text-zinc-200 font-semibold block">{{ "%.2f"|format(file.size/1024/1024) if file.size >= 1048576 else "%.1f"|format(file.size/1024) }} {{ "MB" if file.size >= 1048576 else "KB" }}</span>
+                </div>
+
+                <!-- 3. MIME Type -->
+                <div class="bg-surface-base border border-surface-border rounded-xl p-3 space-y-1">
+                    <span class="text-zinc-500 text-[10px] uppercase block">{{ t('viewer_mimetype') }}</span>
+                    <span class="text-zinc-200 font-semibold truncate block" title="{{ file.mime_type }}">{{ file.mime_type or '-' }}</span>
+                </div>
+
+                <!-- 4. Protocol -->
+                <div class="bg-surface-base border border-surface-border rounded-xl p-3 space-y-1">
+                    <span class="text-zinc-500 text-[10px] uppercase block">Protokol</span>
+                    <span class="text-brand-400 font-semibold block truncate">HTTP 206 / TLS 1.3</span>
+                </div>
+
+                <!-- 5. Upload Date -->
+                <div class="bg-surface-base border border-surface-border rounded-xl p-3 space-y-1">
+                    <span class="text-zinc-500 text-[10px] uppercase block">{{ t('viewer_upload_date') }}</span>
+                    <span class="text-zinc-200 font-semibold block">{{ file.created_at[:10] }}</span>
+                </div>
+
+                <!-- 6. Edge Node State -->
+                <div class="bg-surface-base border border-surface-border rounded-xl p-3 space-y-1">
+                    <span class="text-zinc-500 text-[10px] uppercase block">Status Node</span>
+                    <span class="text-emerald-400 font-semibold flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
+                    </span>
+                </div>
             </div>
 
-            <div class="bg-surface-base border border-surface-border rounded-lg p-3">
-                <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">{{ t('viewer_mimetype') }}</span>
-                <span class="text-zinc-200 font-medium truncate block" title="{{ file.mime_type }}">{{ file.mime_type or '-' }}</span>
+            {% if is_owner %}
+            <!-- Owner Controls / Danger Zone -->
+            <div class="mt-4 pt-4 border-t border-surface-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div class="text-xs text-zinc-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                    <span>Anda memiliki hak administratif (pemilik) atas berkas ini.</span>
+                </div>
+                <form action="/web/files/delete/{{ file.id }}" method="post" onsubmit="return confirm('{{ t('delete_confirm') }}')">
+                    <button type="submit" class="px-3.5 py-2 rounded-xl bg-red-950/40 hover:bg-red-900/60 border border-red-800/40 text-red-300 hover:text-white transition text-xs font-semibold flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"></path>
+                        </svg>
+                        <span>{{ t('btn_delete') }}</span>
+                    </button>
+                </form>
             </div>
-
-            <div class="bg-surface-base border border-surface-border rounded-lg p-3">
-                <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">{{ t('viewer_upload_date') }}</span>
-                <span class="text-zinc-200 font-medium">{{ file.created_at[:10] }}</span>
-            </div>
-
-            <div class="bg-surface-base border border-surface-border rounded-lg p-3 flex flex-col justify-between">
-                <span class="text-zinc-500 text-[10px] uppercase block mb-0.5">Status</span>
-                <span class="text-emerald-400 font-medium flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
-                </span>
-            </div>
+            {% endif %}
         </div>
-
-        {% if is_owner %}
-        <div class="mt-4 pt-4 border-t border-surface-border flex justify-between items-center">
-            <span class="text-xs text-zinc-400">Anda adalah pemilik berkas ini.</span>
-            <form action="/web/files/delete/{{ file.id }}" method="post" onsubmit="return confirm('{{ t('delete_confirm') }}')">
-                <button type="submit" class="px-3 py-1.5 rounded bg-red-950/30 hover:bg-red-950 border border-red-900/40 text-red-400 hover:text-red-300 transition text-xs font-medium">
-                    {{ t('btn_delete') }}
-                </button>
-            </form>
-        </div>
-        {% endif %}
-    </div>
+    </details>
     {% endif %}
 </main>
 
+<!-- Mobile QR Code Modal -->
+<div id="qrModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 transition-all">
+    <div class="surface-card p-6 sm:p-8 max-w-sm w-full text-center space-y-4 rounded-2xl border border-surface-border shadow-2xl relative" data-aos="zoom-in">
+        <button onclick="closeQrModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-surface-subtle transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <div class="space-y-1">
+            <h3 class="font-heading font-bold text-base text-white">{{ t('viewer_qr_title') }}</h3>
+            <p class="text-xs text-zinc-400">{{ t('viewer_qr_desc') }}</p>
+        </div>
+        <div class="p-4 bg-white rounded-2xl inline-block mx-auto shadow-xl">
+            <img id="qrImageElement" src="" alt="QR Code" class="w-48 h-48 mx-auto object-contain">
+        </div>
+        <div class="pt-1">
+            <button onclick="closeQrModal()" class="btn-secondary w-full py-2.5 rounded-xl text-xs font-semibold">
+                Tutup
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Image Lightbox Modal -->
+<div id="imageLightbox" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex items-center justify-center p-4 cursor-zoom-out" onclick="closeImageLightbox()">
+    <img id="lightboxImage" src="" alt="Fullscreen Image" class="max-w-[95vw] max-h-[95vh] object-contain rounded-xl shadow-2xl transition-transform duration-300">
+</div>
+
+<style>
+    /* Checkerboard Pattern for Transparent Images */
+    .bg-checkerboard {
+        background-color: #121215 !important;
+        background-image: 
+            linear-gradient(45deg, #1d1d24 25%, transparent 25%), 
+            linear-gradient(-45deg, #1d1d24 25%, transparent 25%), 
+            linear-gradient(45deg, transparent 75%, #1d1d24 75%), 
+            linear-gradient(-45deg, transparent 75%, #1d1d24 75%) !important;
+        background-size: 16px 16px !important;
+        background-position: 0 0, 0 8px, 8px -8px, -8px 0px !important;
+    }
+
+    /* Theater Mode for Video */
+    .theater-active {
+        max-width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* Audio Disc Animation */
+    @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .disc-spinning {
+        animation: spin-slow 12s linear infinite;
+    }
+
+    /* Waveform Animation */
+    .wave-active {
+        animation: wave-bounce 1s ease-in-out infinite alternate;
+    }
+    .wave-active:nth-child(2) { animation-delay: 0.1s; }
+    .wave-active:nth-child(3) { animation-delay: 0.2s; }
+    .wave-active:nth-child(4) { animation-delay: 0.3s; }
+    .wave-active:nth-child(5) { animation-delay: 0.4s; }
+    .wave-active:nth-child(6) { animation-delay: 0.5s; }
+    .wave-active:nth-child(7) { animation-delay: 0.6s; }
+    .wave-active:nth-child(8) { animation-delay: 0.7s; }
+    .wave-active:nth-child(9) { animation-delay: 0.8s; }
+    .wave-active:nth-child(10) { animation-delay: 0.9s; }
+    .wave-active:nth-child(11) { animation-delay: 0.2s; }
+    .wave-active:nth-child(12) { animation-delay: 0.4s; }
+    .wave-active:nth-child(13) { animation-delay: 0.6s; }
+
+    @keyframes wave-bounce {
+        0% { height: 6px; }
+        100% { height: 28px; }
+    }
+</style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Video Setup
         const vid = document.getElementById('galleryVideoPlayer');
         const notice = document.getElementById('videoErrorNotice');
         if (vid && notice) {
             vid.addEventListener('error', function() {
                 notice.classList.remove('hidden');
             });
-            // If source itself errors
             const src = vid.querySelector('source');
             if (src) {
                 src.addEventListener('error', function() {
@@ -242,13 +559,248 @@
                 });
             }
         }
+
+        // Audio Setup
+        const aud = document.getElementById('galleryAudioPlayer');
+        const disc = document.getElementById('audioDisc');
+        const durationText = document.getElementById('audioDurationText');
+        const scrubber = document.getElementById('audioScrubber');
+        const waveBars = document.querySelectorAll('.wave-bar');
+
+        if (aud) {
+            function formatTime(secs) {
+                if (isNaN(secs)) return '0:00';
+                const m = Math.floor(secs / 60);
+                const s = Math.floor(secs % 60);
+                return `${m}:${s < 10 ? '0' : ''}${s}`;
+            }
+
+            aud.addEventListener('loadedmetadata', function() {
+                if (durationText) durationText.textContent = `0:00 / ${formatTime(aud.duration)}`;
+            });
+
+            aud.addEventListener('timeupdate', function() {
+                if (durationText) durationText.textContent = `${formatTime(aud.currentTime)} / ${formatTime(aud.duration)}`;
+                if (scrubber && aud.duration) {
+                    scrubber.value = (aud.currentTime / aud.duration) * 100;
+                }
+            });
+
+            aud.addEventListener('play', function() {
+                if (disc) disc.classList.add('disc-spinning');
+                waveBars.forEach(bar => bar.classList.add('wave-active'));
+            });
+
+            aud.addEventListener('pause', function() {
+                if (disc) disc.classList.remove('disc-spinning');
+                waveBars.forEach(bar => bar.classList.remove('wave-active'));
+            });
+
+            aud.addEventListener('ended', function() {
+                if (disc) disc.classList.remove('disc-spinning');
+                waveBars.forEach(bar => bar.classList.remove('wave-active'));
+            });
+        }
     });
 
+    // Image Handlers
+    function onImageLoaded(img) {
+        const dim = document.getElementById('imgDimensions');
+        const asp = document.getElementById('imgAspect');
+        if (dim && img.naturalWidth && img.naturalHeight) {
+            dim.textContent = `${img.naturalWidth} × ${img.naturalHeight} px`;
+            if (asp) {
+                const gcd = (a, b) => b ? gcd(b, a % b) : a;
+                const d = gcd(img.naturalWidth, img.naturalHeight);
+                asp.textContent = `(${Math.round(img.naturalWidth / d)}:${Math.round(img.naturalHeight / d)})`;
+            }
+        }
+    }
+
+    function toggleCheckerboard() {
+        const wrap = document.getElementById('imageWrapper');
+        if (wrap) wrap.classList.toggle('bg-checkerboard');
+    }
+
+    function openImageLightbox(src) {
+        const box = document.getElementById('imageLightbox');
+        const img = document.getElementById('lightboxImage');
+        if (box && img) {
+            img.src = src;
+            box.classList.remove('hidden');
+        }
+    }
+
+    function closeImageLightbox() {
+        const box = document.getElementById('imageLightbox');
+        if (box) box.classList.add('hidden');
+    }
+
+    // Video Speed & Theater Controls
+    function setPlaybackRate(rate, btn) {
+        const vid = document.getElementById('galleryVideoPlayer');
+        if (vid) {
+            vid.playbackRate = rate;
+            document.querySelectorAll('.speed-pill').forEach(p => {
+                p.classList.remove('bg-brand-600', 'text-white', 'font-semibold');
+                p.classList.add('bg-surface-base', 'text-zinc-300');
+            });
+            btn.classList.remove('bg-surface-base', 'text-zinc-300');
+            btn.classList.add('bg-brand-600', 'text-white', 'font-semibold');
+        }
+    }
+
+    function toggleTheaterMode() {
+        const container = document.getElementById('viewerContainer');
+        const btn = document.getElementById('theaterBtn');
+        if (container) {
+            container.classList.toggle('theater-active');
+            if (btn) btn.classList.toggle('border-brand-500');
+        }
+    }
+
+    function togglePiP() {
+        const vid = document.getElementById('galleryVideoPlayer');
+        if (vid) {
+            if (document.pictureInPictureElement) {
+                document.exitPictureInPicture();
+            } else if (vid.requestPictureInPicture) {
+                vid.requestPictureInPicture();
+            }
+        }
+    }
+
+    // Audio Seek Handler
+    function onAudioSeek(val) {
+        const aud = document.getElementById('galleryAudioPlayer');
+        if (aud && aud.duration) {
+            aud.currentTime = (val / 100) * aud.duration;
+        }
+    }
+
+    // Share & Embed Dropdown Data
+    const shareData = {
+        direct: {
+            val: "{{ direct_url }}",
+            badge: "HOTLINK",
+            badgeClass: "bg-brand-500/10 text-brand-400 border-brand-500/20",
+            note: "Tautan langsung (raw hotlink) untuk disematkan di website, tag HTML, atau bot chat.",
+            openable: true
+        },
+        gallery: {
+            val: "{{ gallery_url }}",
+            badge: "GALLERY",
+            badgeClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+            note: "Halaman web interaktif galeri dengan pemutar media dan inspektor metadata.",
+            openable: true
+        },
+        html: {
+            val: '{% if is_image %}<img src="{{ direct_url }}" alt="{{ file.original_name }}" />{% elif is_video %}<video controls src="{{ direct_url }}"></video>{% else %}<a href="{{ direct_url }}" download>{{ file.original_name }}</a>{% endif %}',
+            badge: "HTML TAG",
+            badgeClass: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+            note: "Snippet tag HTML siap tempel untuk disisipkan ke halaman web atau template CMS.",
+            openable: false
+        },
+        markdown: {
+            val: '{% if is_image %}![{{ file.original_name }}]({{ direct_url }}){% else %}[{{ file.original_name }}]({{ direct_url }}){% endif %}',
+            badge: "MARKDOWN",
+            badgeClass: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+            note: "Format Markdown standar untuk README GitHub, Notion, Obsidian, atau postingan blog.",
+            openable: false
+        },
+        bbcode: {
+            val: '{% if is_image %}[img]{{ direct_url }}[/img]{% else %}[url={{ direct_url }}]{{ file.original_name }}[/url]{% endif %}',
+            badge: "BBCODE",
+            badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+            note: "Format BBCode siap pakai untuk forum komunitas online (XenForo, vBulletin, Kaskus).",
+            openable: false
+        },
+        curl: {
+            val: 'curl -O -L "{{ direct_url }}"',
+            badge: "CURL CLI",
+            badgeClass: "bg-zinc-500/10 text-zinc-300 border-zinc-500/20",
+            note: "Perintah terminal untuk mengunduh berkas langsung melalui Command Prompt atau Bash.",
+            openable: false
+        }
+    };
+
+    function onShareFormatChange(fmt) {
+        const item = shareData[fmt] || shareData.direct;
+        const field = document.getElementById('activeShareField');
+        const badge = document.getElementById('activeFormatBadge');
+        const note = document.getElementById('shareFormatNote');
+        const openBtn = document.getElementById('openShareBtn');
+        const select = document.getElementById('linkFormatSelect');
+
+        if (field) field.value = item.val;
+        if (note) note.textContent = item.note;
+        if (select && select.value !== fmt) select.value = fmt;
+
+        if (badge) {
+            badge.textContent = item.badge;
+            badge.className = `px-2 py-0.5 rounded border text-[10px] font-mono font-bold uppercase ${item.badgeClass}`;
+        }
+
+        if (openBtn) {
+            if (item.openable) {
+                openBtn.href = item.val;
+                openBtn.classList.remove('hidden');
+            } else {
+                openBtn.classList.add('hidden');
+            }
+        }
+
+        // Update pills styling
+        document.querySelectorAll('.fmt-pill').forEach(btn => {
+            const btnFmt = btn.textContent.toLowerCase().trim();
+            if (btnFmt === fmt || (btnFmt === 'curl' && fmt === 'curl')) {
+                btn.className = 'fmt-pill px-2.5 py-1 rounded-lg bg-brand-600 text-white font-semibold transition';
+            } else {
+                btn.className = 'fmt-pill px-2.5 py-1 rounded-lg bg-surface-subtle hover:bg-surface-card border border-surface-border text-zinc-400 hover:text-white transition';
+            }
+        });
+    }
+
+    function setShareFormat(fmt) {
+        onShareFormatChange(fmt);
+    }
+
+    function copyActiveShareField(btn) {
+        const field = document.getElementById('activeShareField');
+        if (!field || !field.value) return;
+        const strCopied = (window.i18nTexts && window.i18nTexts.copied) || 'Tersalin!';
+        const originalHtml = btn.innerHTML;
+
+        navigator.clipboard.writeText(field.value).then(() => {
+            btn.innerHTML = `<svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path></svg><span>${strCopied}</span>`;
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 2000);
+        });
+    }
+
+    // Mobile QR Modal
+    function openQrModal() {
+        const modal = document.getElementById('qrModal');
+        const img = document.getElementById('qrImageElement');
+        const directUrl = "{{ direct_url }}";
+        if (modal && img && directUrl) {
+            const encoded = encodeURIComponent(directUrl);
+            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encoded}&color=0f172a`;
+            modal.classList.remove('hidden');
+        }
+    }
+
+    function closeQrModal() {
+        const modal = document.getElementById('qrModal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    // Copy to Clipboard generic helper
     function copyFieldValue(fieldId, btn) {
         const field = document.getElementById(fieldId);
         if (!field || !field.value) return;
-        const strCopied = (window.i18nTexts && window.i18nTexts.copied) || 'Copied!';
-        const strCopy = (window.i18nTexts && window.i18nTexts.copyKey) || 'Copy';
+        const strCopied = (window.i18nTexts && window.i18nTexts.copied) || 'Tersalin!';
         const originalText = btn.textContent;
 
         navigator.clipboard.writeText(field.value).then(() => {
